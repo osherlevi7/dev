@@ -28,8 +28,7 @@ on:
       name: Fetching changed files
       timout-minutes: 1
       steps:
-        - name: Checkout | bring the last commit files
-          uses: actions/checkout@v3
+        - uses: actions/checkout@v3
           with:
             fetch-depth: 0
         - name: Debuging | Info 
