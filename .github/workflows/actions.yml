@@ -1,0 +1,62 @@
+on:
+
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronized
+      - ready_for_review
+    branches_ignore:
+      - test/**
+
+  push:
+
+    # branches: 
+    #   - mian
+
+  
+  name: CI 
+  concurrency:
+    group: 'ci-${{ github.ref }}'
+  defaults:
+    run: 
+      shell: bash
+
+  jobs:
+    affected-services:
+      runs-on: ubuntu-22.04
+      name: Fetching changed files
+      timout-minutes: 1
+      steps:
+        - name: Checkout | bring the last commit files
+          uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+        - name: Debuging | Info 
+          run: | 
+            echo '${{ github.event.head_commit.message }}'
+            echo '${{ github.base_ref }}'
+            echo '${{ github.ref }}'
+        
+        - name: File | Get changed files 
+          id: changed-files
+          uses: tj-actions/changed-files@v32
+
+        - name: File | List all canged files
+          id: list-files
+          run: | 
+            for file in ${{ steps.chnaged-files.outputs.all_chnaged_files }}; do
+              echo "$file was changed"
+            
+            done
+        outputs:
+          changed_client: ${{ steps.list-files.outputs.changed_client }}
+          code_check: ${{ steps.list-files.outputs.code_check }}
+
+
+      # call-something: 
+      #   name: Run 
+      #   needs: [affected-services]
+      #   if: needs.affected-services.outputs.changed_client == 'true'
+      #   uses: ./.github/workflowes/
+      #   secrets: inherit
