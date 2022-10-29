@@ -1,0 +1,5 @@
+---
+ansible_ssh_args: --tunnel-through-iap --zone={{ zone }} --no-user-output-enabled --quiet
+ansible_scp_extra_args: --tunnel-through-iap --zone={{ zone }} --quiet
+ansible_user: my-as_10722711438542809   
+

@@ -1,0 +1,11 @@
+---
+- name: ping
+  hosts: all
+  become: yes
+  gather_facts: true
+  tasks: 
+    - name: Ping VM Instance group | ping
+      command: pwd
+      register: out
+
+    - debug: var=out.stdout_lines

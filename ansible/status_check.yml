@@ -1,0 +1,22 @@
+- name: Connect to VM and exec a command
+  hosts: all
+  become: yes
+  become_user: ubuntu
+  strategy: free
+  gather_facts: yes
+
+
+  tasks:
+
+  - name: Wait until HTTP status is 200
+    uri:
+      url: 'http://localhost:80'
+      return_content: yes
+      validate_certs: no
+      status_code:
+        - 200
+    until: uri_output.status == 200
+    retries: 24 # Retries for 24 * 5 seconds = 120 seconds = 2 minutes
+    delay: 5 # Every 5 seconds
+    register: uri_output
+

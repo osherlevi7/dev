@@ -1,0 +1,18 @@
+---
+plugin: google.cloud.gcp_compute
+projects:
+  - my-gcp-project-id
+auth_kind: serviceaccount
+service_account_file: ~/.ssh/gcp-sa-ansible.json
+scopes:
+ - 'https://www.googleapis.com/auth/cloud-platform'
+ - 'https://www.googleapis.com/auth/compute.readonly'
+groups:
+  prod: "'production' in name"
+  dev: "'adh-develop' in name"
+  stage: "'adh-stage' in name"
+  demo: "'demo-env' in name"
+compose:
+  ansible_host: networkInterfaces[0].accessConfigs[0].natIP | networkInterfaces[0].networkIP
+  ansible_user: my-as_10722711438542809 
+
