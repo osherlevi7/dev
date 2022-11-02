@@ -1,15 +1,20 @@
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - ready_for_review
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - reopened
+  #     - synchronize
+  #     - ready_for_review
     # branches-ignore:
     #   - cosmetics/**
   push:
-    # branches:
-    #   - main
+     branches:
+       - main
+    
+    # branches-ignore:
+    #   - cosmetics/**
+    #   - cosmetic/**
+
 name: Run continuous integration
 concurrency: 
   group: 'ci-${{ github.ref }}'
@@ -26,35 +31,67 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          
       - name: debug info
         run: |
           echo '${{ github.event.head_commit.message }}'
           echo '${{ github.base_ref }}'
           echo '${{ github.ref }}'
-
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v32
+        uses: tj-actions/changed-files@v34
 
-      - name: List all changed files
-        id: list-files
+      - name: List all changed files & Set affected services
+        id: set-services
         run: |
+          affected_services=()
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$file was changed"
-#         if [[ "$file" == .github/workflows/*.yaml ]] ; then
-#           echo "Will run CI" && echo "::set-output name=changed_client::true"; fi
-#         if [[ "$file" == bash_scripts/*.sh ]] || [[ "$file" == TradingSystemTests/** ]] ; then
-#           echo "Will run CI" && echo "::set-output name=changed_client::true"; fi
-#         if [[ "$file" == **.tf ]] || [[ "$file" == **.sh ]] || [[ "$file" == **.py ]]; then
-#           echo "Will run code checker" && echo "::set-output name=code_check::true"; fi
+          if [[ "$file" == ./** ]] ; then
+            affected_services+=("Some Files has been changed.") ; fi
           done
+          without_dups=$(echo ${affected_services[@]} | xargs -n1 | sort -u | xargs)
+          parsed=$(IFS='|';echo "${without_dups[*]// /|}";IFS=$' \t\n') && echo $parsed
+          echo "affected_services_output=$parsed" >> $GITHUB_OUTPUT
     outputs:
-      changed_client: ${{ steps.list-files.outputs.changed_client }}
-      code_check: ${{ steps.list-files.outputs.code_check }}
+      affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
 
-# call-something:
-#   name: Run
-#   needs: [affected-services]
-#   if: needs.affected-services.outputs.changed_client == 'true'
-#   uses: ./.github/workflows/
-#   secrets: inherit
+  setup-build-push:
+    needs: [affected-services]
+    if: needs.affected-services.outputs.affected_services_output
+    name: Setup, Build, and Push services
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout | Bring the new code
+        uses: actions/checkout@v3
+
+      - name: Build-x | Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2.2.0
+
+      - name: 'Authenticate to Google Cloud'
+        id: 'auth'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.GCR_SA_RW_KEY }}'
+
+      - name: login to gcr
+        run: |
+          gcloud auth configure-docker -q
+
+      - name: Docker build service  
+        run: >
+          ./scripts/docker_build.sh 
+          --action build
+          --branch ${{ github.ref_name }}
+          --project_id gcp-project
+          --affected_services '"${{needs.affected-services.outputs.affected_services_output}}"'
+
+      - name: Docker push service
+        run: >
+          ./scripts/docker_build.sh 
+          --action push
+          --branch ${{ github.ref_name }}
+          --project_id gcp-project
+          --affected_services '"${{needs.affected-services.outputs.affected_services_output}}"'
+
+
