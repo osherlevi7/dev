@@ -9,7 +9,7 @@ on:
     #   - cosmetics/**
   push:
      branches:
-       - main
+       - dev
     
     # branches-ignore:
     #   - cosmetics/**
