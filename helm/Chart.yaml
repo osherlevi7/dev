@@ -1,0 +1,12 @@
+apiVersion: v2
+name: helm
+description:  Helm chart for father chart applications
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+dependencies:
+   - name: "cron-job"
+     version: "1.0.0"
+   - name: "promtail-grafana"
+     version: "1.0.0"

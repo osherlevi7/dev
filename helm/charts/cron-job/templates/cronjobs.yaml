@@ -1,0 +1,55 @@
+{{- range $cronjob := .Values.cron.cronsget }}
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $cronjob.name | quote }}
+  namespace: {{ $cronjob.namespace | quote}}
+spec:
+  schedule: "{{ $cronjob.schedule }}"
+  timeZone: "Etc/UTC"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ $.Values.global.serviceAccountName }}
+          containers:
+          - name: cron-image
+            image: "curlimages/curl"
+            imagePullPolicy: IfNotPresent
+            command: ['curl', '-v', '-X', 'GET', "{{ $cronjob.command }}"]
+          restartPolicy: OnFailure
+
+{{- end}}
+
+
+{{- range $cronjob := .Values.cron.cronspost }}
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $cronjob.name | quote }}
+  namespace: {{ $cronjob.namespace | quote}}
+spec:
+  schedule: "{{ $cronjob.schedule }}"
+  timeZone: "Etc/UTC"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ $.Values.global.serviceAccountName }}
+          containers:
+          - name: cron-image
+            image: "curlimages/curl"
+            imagePullPolicy: IfNotPresent
+            command: ['curl', '-v', '-X', 'POST', "{{ $cronjob.command }}"]
+          restartPolicy: OnFailure
+        
+
+{{- end}}

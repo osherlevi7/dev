@@ -1,0 +1,21 @@
+cron:
+  enabled: true
+  replicaCount: 1
+  cronjob:
+  metadata:
+    name: cronjob
+    namespace: default
+  cronsget:
+    - id: "0"
+      name:  job-01
+      command: 'http://admin:admin@app.domain/v1/'
+      schedule: "0 13 * * *"
+    - id: "1"
+      name: job-02
+      command: 'http://admin:admin@app.domain/v1/'
+      schedule: "0 * * * *"
+    - id: "2"
+      name: job-03
+      command: 'http://admin:admin@app.domain/v1/'
+      schedule: "* * * * *"
+

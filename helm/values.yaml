@@ -1,0 +1,48 @@
+# Global values for helm, overriden in each services values.yaml.
+
+global:
+  environment: &ENV "production"
+  namespace: &NS "production"
+  host: &HOST "https://app.domain.ai/"
+  projectId: &PROJ gcp-project
+  serviceAccountName: "micro-services-sa"
+  imagePullSecrets:
+    - name: "sa-key-main"
+  image_tag_override: "main-latest"
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.allow-http: "false"
+      kubernetes.io/ingress.class: "traefik"
+      traefik.ingress.kubernetes.io/affinity: "true"
+    host:  "Host(`first.certs.ai`) || Host(`second.certs.ai`)"
+    namespace: *NS
+    paths:
+      - path: /
+      - path: /extra-path
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+            - key: team
+              operator: In
+              values:
+                - engineers
+  promtail:
+    namespace: *NS
+    serviceAccount:
+      name: *NS
+    rbac:
+      name: *NS
+  tolerations: []
+  nodeSelector:
+    iam.gke.io/gke-metadata-server-enabled: "true"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: team
+            operator: In
+            values:
+              - engineers
