@@ -1,0 +1,36 @@
+pipeline {
+    /* insert Declarative Pipeline here */
+    agent { 
+        node ('ansible') 
+    }
+	parameters { 
+		string(name: 'PROJECT', defaultValue: 'project', description: 'Insert the GCP project name to build in.')
+		string(name: 'SUB_DM_NAME', defaultValue: '', description: 'Insert the sub-domain name of the env.')
+     	string(name: 'REGION', defaultValue: '', description: 'Insert the GCP region to build.')
+    }
+   	stages {
+		stage("Checkout devops repo"){
+            steps{
+                    echo "$WORKSPACE"
+                    sh 'git clone git@github.com:osherlevi7/dev.git'
+                    sh "ls -lrt"
+            }
+        }
+        stage ('Create the schedulers table for the ENV') {
+			steps {
+				dir("$WORKSPACE/gcp-scripts") {
+				    sh "export ANSIBLE_FORCE_COLOR=true"
+                    sh "ls -lrt"
+                    sh "./create-scheduler.sh ${PROJECT} ${SUB_DM_NAME} ${REGION}"
+                }   
+            }
+		}
+	}
+	post {
+    	always {
+            cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true)
+    	    }
+    }
+}

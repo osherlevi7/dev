@@ -1,0 +1,35 @@
+pipeline {
+    /* insert Declarative Pipeline here */
+    agent { 
+        node ('ansible') 
+    }
+	parameters { 
+		string(name: 'PROJECT', defaultValue: 'project', description: 'Insert the GCP project name to build in.')
+     	string(name: 'ENV_TYPE', defaultValue: '', description: 'Insert env name to build.')
+    }
+   	stages {
+		stage("Checkout devops repo"){
+            steps{
+                    echo "$WORKSPACE"
+                    sh 'git clone git@github.com:osherlevi7/dev.git'
+                    sh "ls -lrt"
+            }
+        }
+        stage ('Create PubSub topic for the ENV') {
+			steps {
+				dir("$WORKSPACE/gcp-scripts") {
+				    sh "export ANSIBLE_FORCE_COLOR=true"
+                    sh "ls -lrt"
+                    sh "./create-pubsub.sh ${PROJECT} ${ENV_TYPE}"
+                }   
+            }
+		}
+	}
+	post {
+    	always {
+            cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true)
+    	    }
+    }
+}

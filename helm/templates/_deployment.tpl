@@ -1,21 +1,21 @@
 {{/*
 Default Template for Deployment. All Sub-Charts under this Chart can include the below template.
 */}}
-{{- define "helm-adh.deploymenttemplate" }}
+{{- define "helm.deploymenttemplate" }}
 {{- $PROJECT_ID := .Values.global.projectId -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "helm-adh.name" . }}
+  name: {{ include "helm.name" . }}
   labels:
-    {{- include "helm-adh.labels" . | nindent 4 }}
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "helm-adh.selectorLabels" . | nindent 6 }}
+      {{- include "helm.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -23,7 +23,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "helm-adh.selectorLabels" . | nindent 8 }}
+        {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
@@ -36,7 +36,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "gcr.io/adh-artifactory/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "gcr.io/artifactory/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -58,7 +58,7 @@ spec:
           {{- if .Values.configMap.enabled }}
           envFrom:
             - configMapRef:
-                name: {{ include "helm-adh.name" . }}-configmap
+                name: {{ include "helm.name" . }}-configmap
           {{- end }}
       {{- with .Values.global.nodeSelector }}
       nodeSelector:

@@ -9,8 +9,8 @@ scopes:
  - 'https://www.googleapis.com/auth/compute.readonly'
 groups:
   prod: "'production' in name"
-  dev: "'adh-develop' in name"
-  stage: "'adh-stage' in name"
+  dev: "'develop' in name"
+  stage: "'stage' in name"
   demo: "'demo-env' in name"
 compose:
   ansible_host: networkInterfaces[0].accessConfigs[0].natIP | networkInterfaces[0].networkIP

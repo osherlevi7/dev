@@ -1,7 +1,7 @@
-{{- define "helm-adh.middlewaretemplate" }}
-{{- $shortName := include "helm-adh.name" . | replace "-be" "-backend" | replace "-fe" "-frontend" -}}
+{{- define "helm.middlewaretemplate" }}
+{{- $shortName := include "helm.name" . | replace "-be" "-backend" | replace "-fe" "-frontend" -}}
 {{- if .Values.global.ingress.enabled -}}
-{{ if eq $shortName "emr-backend" }}
+{{ if eq $shortName "app-backend" }}
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:

@@ -1,11 +1,11 @@
-{{- define "helm-adh.serviceaccounttemplate" }}
+{{- define "helm.serviceaccounttemplate" }}
 {{- if .Values.serviceAccount.create -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "helm-adh.serviceAccountName" . }}
+  name: {{ include "helm.serviceAccountName" . }}
   labels:
-    {{- include "helm-adh.labels" . | nindent 4 }}
+    {{- include "helm.labels" . | nindent 4 }}
   {{- with .Values.serviceAccount.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

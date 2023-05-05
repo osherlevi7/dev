@@ -33,7 +33,7 @@ msg() { printf "\n${2} docker image on service ${NC}${YELLOW}$1${YELLOW}${NC}\n"
 for service in ${parsed_services[*]}; do
     path="services/$service/."
     msg $service "${NC}${GREEN}${action}ing"
-    #if [[ $service == "emr-fe" ]]; then api="/emr-backend";calls_fe="/calls-frontend";calls_be="/calls-backend"; fi
+    #if [[ $service == "app-fe" ]]; then api="/app-backend";calls_fe="/calls-frontend";calls_be="/calls-backend"; fi
     if [[ $action == "build" ]]; then
         docker build \
             #--build-arg envfile=".env.$env" \

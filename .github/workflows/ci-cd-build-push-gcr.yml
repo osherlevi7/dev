@@ -1,3 +1,4 @@
+name: JOB | Run continuous integration
 on:
   # pull_request:
   #   types:
@@ -15,7 +16,6 @@ on:
     #   - cosmetics/**
     #   - cosmetic/**
 
-name: Run continuous integration
 concurrency: 
   group: 'ci-${{ github.ref }}'
 defaults:
@@ -32,22 +32,23 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: debug info
+      - name: Info | Debugging info
         run: |
           echo '${{ github.event.head_commit.message }}'
           echo '${{ github.base_ref }}'
           echo '${{ github.ref }}'
-      - name: Get changed files
+      
+      - name: Step 1 | Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v34
 
-      - name: List all changed files & Set affected services
+      - name: Step 2 | List all changed files & Set affected services
         id: set-services
         run: |
           affected_services=()
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$file was changed"
-          if [[ "$file" == ./** ]] ; then
+          if [[ "$file" == services/** ]] ; then
             affected_services+=("Some Files has been changed.") ; fi
           done
           without_dups=$(echo ${affected_services[@]} | xargs -n1 | sort -u | xargs)
@@ -59,26 +60,26 @@ jobs:
   setup-build-push:
     needs: [affected-services]
     if: needs.affected-services.outputs.affected_services_output
-    name: Setup, Build, and Push services
-    runs-on: ubuntu-22.04
+    name: JOB |  Setup, Build, and Push to registry
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout | Bring the new code
+      - name: Step 1 | Bring the new code
         uses: actions/checkout@v3
 
-      - name: Build-x | Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.2.0
+      - name: Step 2 | Set up Docker Buildx  # need to enable and save the cache
+        # uses: docker/setup-buildx-action@v2.2.0
 
-      - name: 'Authenticate to Google Cloud'
+      - name: Step 3 | Authenticate to Google Cloud
         id: 'auth'
         uses: 'google-github-actions/auth@v0'
         with:
           credentials_json: '${{ secrets.GCR_SA_RW_KEY }}'
 
-      - name: login to gcr
+      - name: Step 4 | login to gcr
         run: |
           gcloud auth configure-docker -q
 
-      - name: Docker build service  
+      - name: Step 5 |  Docker build service  
         run: >
           ./scripts/docker_build.sh 
           --action build
@@ -86,7 +87,7 @@ jobs:
           --project_id gcp-project
           --affected_services '"${{needs.affected-services.outputs.affected_services_output}}"'
 
-      - name: Docker push service
+      - name: Step 6 | Docker push service
         run: >
           ./scripts/docker_build.sh 
           --action push

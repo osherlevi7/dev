@@ -1,0 +1,24 @@
+pipeline {
+    /* insert Declarative Pipeline here */
+    agent { 
+        node ('ansible') 
+    }
+    parameters {
+        string(name: 'GROUP_NAME', defaultValue: '', description: 'Insert the instance group to shutdown.')
+    }
+   	stages {
+		stage("Stop instance grooup"){
+            steps{
+                echo "$WORKSPACE"
+                sh "gcloud compute instance-groups managed resize ${GROUP_NAME} --size=0 --region=us-east4 "
+            }
+        }
+	}
+	post {
+    	always {
+            cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true)
+    	    }
+    }
+}

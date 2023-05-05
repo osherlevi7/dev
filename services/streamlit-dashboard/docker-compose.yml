@@ -1,0 +1,21 @@
+services:
+  data-dash:
+    build:
+      context: .
+    container_name: streamlit
+    environment:
+      STREAMLIT_GLOBAL_DEVELOPMENT_MODE: false
+      STREAMLIT_LOGGER_LEVEL: "debug"
+      STREAMLIT_RUNNER_FAST_RERUNS: true
+      STREAMLIT_SERVER_HEADLESS: true
+      STREAMLIT_SERVER_ADDRESS: "0.0.0.0"
+      STREAMLIT_SERVER_PORT: 8000
+      STREAMLIT_SERVER_SCRIPT_HEALTH_CHECK_ENABLED: true
+      STREAMLIT_SERVER_BASE_URL_PATH: "/data/dashboard"
+     #STREAMLIT_SERVER_ENABLE_CORS
+     #STREAMLIT_BROWSER_SERVER_ADDRESS
+     #STREAMLIT_BROWSER_SERVER_PORT
+      STREAMLIT_THEME_BASE: "light"
+    ports:
+      - '80:8000'
+    restart: "no"

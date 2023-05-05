@@ -32,7 +32,7 @@ variable "cluster_name" {
 variable "dns_project" {
   type        = string
   description = "cloudDNS project"
-  default     = "adh-dns"
+  default     = "dns-project"
 }
 
 variable "environment" {

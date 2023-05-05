@@ -1,0 +1,42 @@
+name: JOB | Container Cleaning
+on:
+  # schedule:
+    # - cron: '0 0 */1 * *' # runs daily
+  workflow_dispatch: # allows for manual invocation
+
+jobs:
+  cleaner:
+    runs-on: 'ubuntu-latest'
+    steps:
+      # configure based on your registry
+      - name: Step 1 | Setup Docker
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh ./get-docker.sh
+
+      - name: Step 2 | Authenticate to Google Cloud
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.ARTIFACTS_SA_RW_KEY }}'
+
+      - name: Step 3 | Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: Step 4 | Login to gcr
+        run: |
+          gcloud auth configure-docker -q
+          git config --global --add safe.directory '*'
+
+      # customize based on the gcr-cleaner flags
+      - uses: 'docker://us-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli'
+        with:
+          args: >-
+            -repo=gcr.io/artifactory/image-a
+            -repo=gcr.io/artifactory/image-b
+            -repo=gcr.io/artifactory/image-c
+            -repo=gcr.io/artifactory/image-d
+            -repo=gcr.io/artifactory/image-e
+            -repo=gcr.io/artifactory/image-f
+            -tag-filter-all="HEAD-"
+            -grace=2000h 

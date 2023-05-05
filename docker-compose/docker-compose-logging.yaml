@@ -1,0 +1,47 @@
+---
+version: "3"
+
+services:
+  elasticsearch:
+    image: ${ELASTICSEARCH_IMAGE}
+    environment:
+      - "discovery.type=single-node"
+    expose:
+      - ${ELASTICSEARCH_PORT}
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+
+  kibana:
+    image: ${KIBANA_IMAGE}
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - SERVER_BASEPATH=/kibana
+      - SERVER_HOST=0.0.0.0
+    depends_on:
+      - elasticsearch
+    expose:
+      - 5601
+
+  fluentd:
+    image: ${REGISTRY}/${FLUENTD_IMAGE}:${TAG}
+    restart: ${RESTART_POLICY}
+    environment:
+      FLUENTD_PORT: ${FLUENTD_PORT}
+      FLUENTD_MACHINE: ${FLUENTD_MACHINE}
+      ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST}
+      ELASTICSEARCH_PORT: ${ELASTICSEARCH_PORT}
+    ports:
+      - ${FLUENTD_PORT}:${FLUENTD_PORT}
+      - ${FLUENTD_PORT}:${FLUENTD_PORT}/udp
+
+  ingress:
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: ${FLUENTD_ADDRESS}:${FLUENTD_PORT}
+        tag: ingress
+    depends_on:
+      - fluentd
+
+volumes:
+  elasticsearch:

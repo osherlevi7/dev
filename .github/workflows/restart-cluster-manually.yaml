@@ -1,0 +1,96 @@
+# GHAction for restart cluster from a branch if no GitOpt tool is involved. 
+on:
+  workflow_dispatch:
+    inputs:
+      cluster_name:
+        description: "which cluster to connect?"
+        type: choice
+        required: true
+        options: ["production", "develop", "staging"]
+      environments:
+        description: "which namespace to rollout?"
+        required: true
+        type: choice
+        options:
+          - dev
+          - data
+          - qa
+          - staging
+          - production
+
+      service:
+        # type: choice
+        description: K8s deployments to restart 
+        required: true
+        default: nginx|ingress|my-app
+        options:
+          - "nginx"
+          - "ingress"
+          - "my-app"
+
+
+name: Restart Deployment
+concurrency:
+  group: "ci-${{ github.ref }}"
+defaults:
+  run:
+    shell: bash
+jobs:
+  restart-cluster:
+    name: JOB | Restart the choosen cluster
+    runs-on: ubuntu-latest # Can run on a GHA self runner. 
+    timeout-minutes: 5
+    steps:
+      - name: Step 1 | Checkout - Bring the new code
+        uses: actions/checkout@v3
+
+      - name: Step 2 | Authenticate to Google Cloud
+        id: "auth-prod"
+        if: contains(github.event.inputs.cluster_name, 'production')
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GCP_PROD_K8S }}"
+
+      - name: Step 2 | Authenticate to Google Cloud-develop
+        id: "auth-develop"
+        if: false == contains(github.event.inputs.cluster_name, 'production') 
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GKE_DEPLOY_SA }}"  
+
+      - name: Step 3 | Auth with Google GKE Develop
+        uses: "google-github-actions/get-gke-credentials@v1"
+        if: false == contains(github.event.inputs.cluster_name, 'production')
+        with:
+          cluster_name: "${{ inputs.cluster_name }}"
+          location: us-east1-c
+          project_id: develop-project
+
+      - name: Step 3 | Auth with Google GKE Prod
+        uses: "google-github-actions/get-gke-credentials@v1"
+        if: contains( github.event.inputs.cluster_name, 'production')
+        with:
+          cluster_name: "${{ inputs.cluster_name }}"
+          location: us-east1
+          project_id: prod-project
+
+      - name: Step 4 | Install helm v3 # no need on Self runner 
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
+
+      - name: Step 5 | Add the runner IP on the white listing of the Cluster Develop
+        if: false == contains(github.event.inputs.cluster_name, 'production')
+        run: |
+          .github/workflows/scripts/ci-communicate.sh "${{ github.event.inputs.cluster_name }}" us-east1 develop-project
+
+      - name: Step 5 | Add the runner IP on the white listing of the Cluster Prod
+        if: contains(github.event.inputs.cluster_name, 'production')
+        run: |
+          .github/workflows/scripts/ci-communicate.sh "${{ github.event.inputs.cluster_name }}" us-east1 prod-project
+
+      # make namespace and service account dynamic
+      - name: Step 6 | Rollout K8s deployment
+        run: |
+          kubectl rollout restart deployment ${{ github.event.inputs.service }}  -n ${{ github.event.inputs.environments }}

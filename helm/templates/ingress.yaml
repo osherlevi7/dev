@@ -7,7 +7,7 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ include "helm-adh.name" . }}-ingressroute
+  name: {{ include "helm.name" . }}-ingressroute
 spec:
   entryPoints:
     - web
@@ -18,7 +18,7 @@ spec:
       middlewares:
         - name: gzip-compress
         - name: buffering-requests
-        {{- if eq (trimPrefix "/" .path) "emr-backend" }}
+        {{- if eq (trimPrefix "/" .path) "app-backend" }}
         - name: strip-prefix-{{ trimPrefix "/" .path }}
         {{- end }}
         {{- if ne .path "/" }}
@@ -29,7 +29,7 @@ spec:
           {{ if eq .path "/" }}
           passHostHeader: true
           {{ end }}
-          name: {{ default "emr-backend" (trimPrefix "/" .path) }}
+          name: {{ default "app-backend" (trimPrefix "/" .path) }}
           namespace: stg
           port: 80
     {{- end }}

@@ -1,16 +1,16 @@
-{{- define "helm-adh.hpatemplate" }}
+{{- define "helm.hpatemplate" }}
 {{- if .Values.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "helm-adh.name" . }}
+  name: {{ include "helm.name" . }}
   labels:
-    {{- include "helm-adh.labels" . | nindent 4 }}
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "helm-adh.fullname" . }}
+    name: {{ include "helm.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

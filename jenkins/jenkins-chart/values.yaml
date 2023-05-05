@@ -1,0 +1,70 @@
+controller:
+  jenkinsUrlProtocol: "https"
+  jenkinsUrl: "jenkins.domain.com"
+  frontendconfig:
+    name: api-ingress-frontend-config
+    namespace: jenkins-ns
+  spec:
+    sslPolicy: ssl-policy
+    redirectToHttps:
+      enabled: true
+
+
+  ingress:  
+    resourceRootUrl: "jenkins.domain.com"
+    enabled: true
+    paths: []
+    apiVersion: "extensions/v1beta1"
+    hostName: "jenkins.domain.com"
+    annotations:
+      networking.gke.io/frontend-config: "api-ingress-frontend-config"
+      kubernetes.io/ingress.global-static-ip-name: "jenkins-ex-ip"
+      networking.gke.io/managed-certificates: "jenkins-cert"
+      kubernetes.io/ingress.class: "gce"
+      kubernetes.io/tls-acme: "true"
+      kubernetes.io/ingress.allow-http: "false" # Allow only https connections
+    spec:
+      tls:
+        hosts: "jenkins.domain.com"
+        secretName: "jenkins-cert"
+      rules:
+      - http:
+          paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: cd-jenkins
+                port:
+                  number: 8080
+  
+  installPlugins:
+    - kubernetes:latest
+    - workflow-job:latest
+    - workflow-aggregator:latest
+    - credentials-binding:latest
+    - git:latest
+    - google-oauth-plugin:latest
+    - google-source-plugin:latest
+    - google-kubernetes-engine:latest
+    - google-storage-plugin:latest
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "1024Mi"
+    limits:
+      cpu: "1"
+      memory: "3500Mi"
+  javaOpts: "-Xms3500m -Xmx3500m"
+agent:
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      cpu: "1"
+      memory: "512Mi"
+persistence:
+  size: 100Gi
+serviceAccount:
+  name: jenkins-ns

@@ -1,0 +1,63 @@
+---
+version: "3"
+
+services:
+  prometheus:
+    image: ${REGISTRY}/${PROMETHEUS_IMAGE}:${TAG}
+    restart: ${RESTART_POLICY}
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.external-url=/prometheus/
+      - --storage.tsdb.retention=365d
+    volumes:
+      - prometheus:/prometheus
+    expose:
+      - ${PROMETHEUS_PORT}
+
+  grafana:
+    image: ${REGISTRY}/${GRAFANA_IMAGE}:${TAG}
+    restart: ${RESTART_POLICY}
+    volumes:
+      - grafana:/var/lib/grafana
+    environment:
+      - GF_INSTALL_PLUGINS=${GF_INSTALL_PLUGINS}
+    ports:
+      - ${GRAFANA_PORT}:3000
+
+  redis-exporter:
+    image: ${REDIS_EXPORTER_IMAGE}
+    command: -redis.addr redis://redis:6379
+    expose:
+      - ${REDIS_EXPORTER_PORT}
+
+  postgres-exporter:
+    image: ${POSTGRES_EXPORTER_IMAGE}
+    restart: ${RESTART_POLICY}
+    environment:
+      - DATA_SOURCE_URI=${POSTGRES_HOST}:${POSTGRES_PORT}/postgres?sslmode=disable
+      - DATA_SOURCE_USER=${POSTGRES_USER}
+      - DATA_SOURCE_PASS=${POSTGRES_PASSWORD}
+    expose:
+      - ${POSTGRES_EXPORTER_PORT}
+
+  node-exporter:
+    image: ${NODE_EXPORTER_IMAGE}
+    restart: unless-stopped
+    expose:
+      - ${NODE_EXPORTER_PORT}
+
+  cadvisor:
+    image: ${CADVISOR_IMAGE}
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    expose:
+      - ${CADVISOR_PORT}
+
+volumes:
+  prometheus:
+  grafana:
+

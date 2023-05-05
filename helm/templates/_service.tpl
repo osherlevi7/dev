@@ -1,10 +1,10 @@
-{{- define "helm-adh.servicetemplate" }}
+{{- define "helm.servicetemplate" }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "helm-adh.name" .  | replace "-be" "-backend" | replace "-fe" "-frontend" }}
+  name: {{ include "helm.name" .  | replace "-be" "-backend" | replace "-fe" "-frontend" }}
   labels:
-    {{- include "helm-adh.labels" . | nindent 4 }}
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,5 +12,5 @@ spec:
       port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
   selector:
-    {{- include "helm-adh.selectorLabels" . | nindent 4 }}
+    {{- include "helm.selectorLabels" . | nindent 4 }}
 {{- end }}

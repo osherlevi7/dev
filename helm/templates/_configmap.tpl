@@ -1,9 +1,9 @@
-{{- define "helm-adh.configmaptemplate" }}
+{{- define "helm.configmaptemplate" }}
 {{- if .Values.configMap.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "helm-adh.name" . }}-configmap
+  name: {{ include "helm.name" . }}-configmap
 data:
   {{- toYaml .Values.configMap.data | nindent 2 }}
 {{- end }}

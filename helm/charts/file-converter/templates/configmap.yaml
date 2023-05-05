@@ -1,0 +1,16 @@
+{{ define "render-value" }}
+  {{- if kindIs "string" .Values }}
+    {{- tpl .Values .context }}
+  {{- else }}
+    {{- tpl (.Values | toYaml) .context }}     
+  {{- end }}
+{{- end }}
+
+{{- if .Values.configMap.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "helm.name" . }}-configmap
+data:
+{{ include "render-value" ( dict "Values" .Values.configMap.data "context" .) | indent 2}}
+{{- end }}
