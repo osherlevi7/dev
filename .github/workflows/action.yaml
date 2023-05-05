@@ -1,0 +1,100 @@
+name: JOB | Run continuous integration
+on:
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - reopened
+  #     - synchronize
+  #     - ready_for_review
+    # branches-ignore:
+    #   - cosmetics/**
+  push:
+     branches:
+       - main
+       - dev
+       - feature/**
+    
+    # branches-ignore:
+    #   - cosmetics/**
+    #   - cosmetic/**
+
+concurrency: 
+  group: 'ci-${{ github.ref }}'
+defaults:
+  run:
+    shell: bash
+jobs:
+
+  affected-services:
+    runs-on: ubuntu-22.04
+    name: Fetch changed files
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Info | Debugging info
+        run: |
+          echo '${{ github.event.head_commit.message }}'
+          echo '${{ github.base_ref }}'
+          echo '${{ github.ref }}'
+      
+      - name: Step 1 | Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v34
+
+      - name: Step 2 | List all changed files & Set affected services
+        id: set-services
+        run: |
+          affected_services=()
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          if [[ "$file" == ** ]] ; then
+            affected_services+=("Some Files has been changed.") ; fi
+          done
+          without_dups=$(echo ${affected_services[@]} | xargs -n1 | sort -u | xargs)
+          parsed=$(IFS='|';echo "${without_dups[*]// /|}";IFS=$' \t\n') && echo $parsed
+          echo "affected_services_output=$parsed" >> $GITHUB_OUTPUT
+    outputs:
+      affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
+
+  # setup-build-push:
+  #   needs: [affected-services]
+  #   if: needs.affected-services.outputs.affected_services_output
+  #   name: JOB |  Setup, Build, and Push to registry
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Step 1 | Bring the new code
+  #       uses: actions/checkout@v3
+
+  #     # - name: Step 2 | Set up Docker Buildx  # need to enable and save the cache
+  #     #   uses: docker/setup-buildx-action@v2.2.0
+
+  #     - name: Step 3 | Authenticate to Google Cloud
+  #       id: 'auth'
+  #       uses: 'google-github-actions/auth@v0'
+  #       with:
+  #         credentials_json: '${{ secrets.GCR_SA_RW_KEY }}'
+
+  #     - name: Step 4 | login to gcr
+  #       run: |
+  #         gcloud auth configure-docker -q
+
+  #     - name: Step 5 |  Docker build service  
+  #       run: >
+  #         ./scripts/docker_build.sh 
+  #         --action build
+  #         --branch ${{ github.ref_name }}
+  #         --project_id gcp-project
+  #         --affected_services '"${{needs.affected-services.outputs.affected_services_output}}"'
+
+  #     - name: Step 6 | Docker push service
+  #       run: >
+  #         ./scripts/docker_build.sh 
+  #         --action push
+  #         --branch ${{ github.ref_name }}
+  #         --project_id gcp-project
+  #         --affected_services '"${{needs.affected-services.outputs.affected_services_output}}"'
+
+
