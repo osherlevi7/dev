@@ -1,0 +1,27 @@
+version: '2.4'
+
+services:
+  github-actions:
+    environment:
+      ACCESS_TOKEN: ${GITHUB_ACTIONS_ACCESS_TOKEN}
+      ORG_NAME: ${GITHUB_ACTIONS_ORG_NAME}
+      RUNNER_SCOPE: ${GITHUB_ACTIONS_RUNNER_SCOPE}
+      RUNNER_NAME_PREFIX: ${GITHUB_ACTIONS_RUNNER_NAME}
+      RUNNER_WORKDIR: /actions-runner/github-actions
+      LABELS: ${GITHUB_ACTIONS_RUNNER_LABELS} 
+      RUN_AS_ROOT: true
+    image: myoung34/github-runner:latest
+    restart: always
+    scale: ${GITHUB_ACTIONS_SCALE:-1}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${PWD}/github-actions:/actions-runner/github-actions
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --cleanup --interval 3600
+    labels:
+        - com.centurylinklabs.watchtower.enable=false
