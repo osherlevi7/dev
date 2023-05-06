@@ -1,11 +1,11 @@
 # The GitHub Actions docs (https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on)
 # describe other options for 'on', 'pull_request' is a good default.
-on: push
-  # workflow_call:
-  #   inputs:
-  #     terraform_env:
-  #       required: true
-  #       type: string
+on:
+  workflow_call:
+    inputs:
+      terraform_env:
+        required: true
+        type: string
 
 jobs:
   infracost:

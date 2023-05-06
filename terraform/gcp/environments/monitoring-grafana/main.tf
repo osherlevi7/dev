@@ -11,3 +11,4 @@ module "monitor-serverless" {
   # dns_project                 = "dns-project" # also for general secrets
 }
 
+
