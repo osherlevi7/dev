@@ -66,8 +66,8 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
     uses: ./.github/workflows/checkov-terraform-SCA.yaml
-      with:
-        services: ${{needs.affected-services.outputs.affected_services_output}}
+    with:
+      services: ${{needs.affected-services.outputs.affected_services_output}}
 
   # setup-build-push:
   #   needs: [affected-services]
