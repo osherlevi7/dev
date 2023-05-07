@@ -67,7 +67,7 @@ jobs:
     if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
     steps:
       - name:  Infracost | Develop clustr on GKE (Unsecure)
-        uses: .github/workflows/more-actions/checkov-terraform-SCA.yaml
+        uses: ./.github/workflows/more-actions/checkov-terraform-SCA.yaml
         with:
           services: ${{needs.affected-services.outputs.affected_services_output}}
         # secrets: inherit
