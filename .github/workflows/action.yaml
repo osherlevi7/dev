@@ -67,7 +67,7 @@ jobs:
     if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name:  Infracost | Develop clustr on GKE (Unsecure)
         uses: ./.github/workflows/checkov-terraform-SCA.yaml
