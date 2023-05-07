@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main", "feature/**", "fix/**"]
 
-  workflow_dispatch:
+  # workflow_dispatch:
     
 jobs:
   checkov:
