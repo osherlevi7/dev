@@ -69,8 +69,12 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
 
+      - name: ls 
+        run: | 
+          ls -lrt
+
       - name:  Infracost | Develop clustr on GKE (Unsecure)
-        uses: /home/runner/work/dev/dev/.github/workflows/checkov-terraform-SCA.yaml
+        uses: ./.github/workflows/checkov-terraform-SCA.yaml
         continue-on-error: true
         # with:
           # services: ${{needs.affected-services.outputs.affected_services_output}}
