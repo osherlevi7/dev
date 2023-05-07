@@ -64,7 +64,7 @@ jobs:
   call-checkov:
     needs: [affected-services]
     runs-on: ubuntu-latest
-    if: affected_services_output
+    if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
     steps:
       - name:  Infracost | Develop clustr on GKE (Unsecure)
         uses: ./.github/workflows/more-actions/checkov-terraform-SCA.yaml
