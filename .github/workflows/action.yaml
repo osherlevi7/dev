@@ -63,6 +63,7 @@ jobs:
     
   call-checkov:
     needs: [affected-services]
+    runs-on: ubuntu-latest
     if: affected_services_output
     steps:
       - name:  Infracost | Develop clustr on GKE (Unsecure)
