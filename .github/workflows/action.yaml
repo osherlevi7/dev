@@ -51,7 +51,7 @@ jobs:
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$file was changed"
           if [[ "$file" == ** ]] ; then
-            affected_services+=("Some Files has been changed.") ; fi
+            affected_services+=("Some Files has been changed !!!! ") ; fi
           if [[ "$file" == terraform/** ]]; then
             affected_services+=("terraform") ; fi
           done
@@ -67,7 +67,7 @@ jobs:
     if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
     steps:
       - name:  Infracost | Develop clustr on GKE (Unsecure)
-        uses: ./.github/workflows/more-actions/checkov-terraform-SCA.yaml
+        uses: .github/workflows/more-actions/checkov-terraform-SCA.yaml
         with:
           services: ${{needs.affected-services.outputs.affected_services_output}}
         # secrets: inherit
