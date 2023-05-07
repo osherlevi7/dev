@@ -58,8 +58,8 @@ jobs:
           without_dups=$(echo ${affected_services[@]} | xargs -n1 | sort -u | xargs)
           parsed=$(IFS='|';echo "${without_dups[*]// /|}";IFS=$' \t\n') && echo $parsed
           echo "affected_services_output=$parsed" >> $GITHUB_OUTPUT
-    outputs:
-      affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
+        outputs:
+          affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
       
       - name: Infracost | Develop clustr on GKE (Unsecure)
         if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
