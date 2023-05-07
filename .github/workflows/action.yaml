@@ -65,20 +65,9 @@ jobs:
     needs: [affected-services]
     runs-on: ubuntu-latest
     if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
-
-      - name: ls 
-        run: | 
-          ls -la
-
-      - name:  Infracost | Develop clustr on GKE (Unsecure)
-        uses: ./.github/workflows/checkov-terraform-SCA.yaml
-        continue-on-error: true
-        with:
-          services: ${{needs.affected-services.outputs.affected_services_output}}
-        # secrets: inherit
+    uses: ./.github/workflows/checkov-terraform-SCA.yaml
+      with:
+        services: ${{needs.affected-services.outputs.affected_services_output}}
 
   # setup-build-push:
   #   needs: [affected-services]
