@@ -71,14 +71,14 @@ jobs:
 
       - name: ls 
         run: | 
-          ls -lrt
+          ls -la
 
       - name:  Infracost | Develop clustr on GKE (Unsecure)
         uses: ./.github/workflows/checkov-terraform-SCA.yaml
         continue-on-error: true
-        # with:
-          # services: ${{needs.affected-services.outputs.affected_services_output}}
-        # secrets: inherit
+        with:
+          services: ${{needs.affected-services.outputs.affected_services_output}}
+        secrets: inherit
 
   # setup-build-push:
   #   needs: [affected-services]
