@@ -1,10 +1,10 @@
 #  Static code analysis tool for terraform
 name: JOB | Checkov terraform code static code analysis. 
 on:
-  push:
-    branches: ["main", "feature/**", "fix/**"]
+  # push:
+  #   branches: ["main", "feature/**", "fix/**"]
 
-  # workflow_dispatch:
+  workflow_dispatch:
     
 jobs:
   checkov:
