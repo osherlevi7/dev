@@ -58,25 +58,21 @@ jobs:
           without_dups=$(echo ${affected_services[@]} | xargs -n1 | sort -u | xargs)
           parsed=$(IFS='|';echo "${without_dups[*]// /|}";IFS=$' \t\n') && echo $parsed
           echo "affected_services_output=$parsed" >> $GITHUB_OUTPUT
-      outputs:
-        affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
-      
-      - name: Infracost | Develop clustr on GKE (Unsecure)
-        if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
-        uses: ./.github/workflows/more-actions/checkov-terraform-SCA.yaml
-        secrets: inherit
-
-    # call-checkov:
-    #   needs: [affected-services]
-    #   if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
-    #   steps:
-    #     - name: Checkout the code
-    #       uses: actions/checkout@v3
-    #     - name:  Infracost | Develop clustr on GKE (Unsecure)
-    #       uses: ./.github/workflows/more-actions/checkov-terraform-SCA.yaml
-    #       # with:
-    #         # services: ${{needs.affected-services.outputs.affected_services_output}}
-    #       # secrets: inherit
+    outputs:
+      affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
+    
+  call-checkov:
+    needs: [affected-services]
+    runs-on: ubuntu-latest
+    if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+      - name:  Infracost | Develop clustr on GKE (Unsecure)
+        uses: ./.github/workflows/checkov-terraform-SCA.yaml
+        # with:
+          # services: ${{needs.affected-services.outputs.affected_services_output}}
+        # secrets: inherit
 
   # setup-build-push:
   #   needs: [affected-services]
