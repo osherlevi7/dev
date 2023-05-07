@@ -1,11 +1,11 @@
 # The GitHub Actions docs (https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on)
 # describe other options for 'on', 'pull_request' is a good default.
-on: push
-  # workflow_call:
-  #   inputs:
-  #     terraform_env:
-  #       required: true
-  #       type: string
+on:
+  workflow_call:
+    inputs:
+      terraform_env:
+        required: true
+        type: string
 
 jobs:
   infracost:
@@ -16,7 +16,7 @@ jobs:
       pull-requests: write
 
     env:
-      TF_ROOT: terraform/environments/${{ inputs.terraform_env }}
+      TF_ROOT: ${{ inputs.terraform_env }}
 
     steps:
 
@@ -40,7 +40,7 @@ jobs:
 
       # Checkout the current PR branch so we can create a diff.
       - name: Checkout PR branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       # Generate an Infracost diff and save it to a JSON file.
       - name: Generate Infracost diff
