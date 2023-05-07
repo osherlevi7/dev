@@ -30,7 +30,7 @@ jobs:
     name: Fetch changed files
     timeout-minutes: 1
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           
@@ -70,7 +70,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name:  Infracost | Develop clustr on GKE (Unsecure)
-        uses: ./.github/workflows/checkov-terraform-SCA.yaml
+        uses: /home/runner/work/dev/dev/.github/workflows/checkov-terraform-SCA.yaml
         continue-on-error: true
         # with:
           # services: ${{needs.affected-services.outputs.affected_services_output}}
