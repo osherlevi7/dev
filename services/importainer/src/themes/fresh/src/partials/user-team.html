@@ -1,0 +1,61 @@
+<div class="card">
+  <div class="card-content content">
+
+    <div class="level">
+      <div class="level-left">
+        <h3 class="has-text-weight-normal mb-0">Your Team</h3>
+      </div>
+      <div class="level-right">
+        <a class="button is-primary modal-trigger" data-modal="invite-modal">
+          Add new
+        </a>
+
+      </div>
+    </div>
+
+    <ul style="list-style-type: none; margin: 0">
+    {% for u in account_users %}
+      <li class="mb-5">
+        <div class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <div>
+                <p class="mb-0">{{{ user.u_name }}}</p>
+                <p class="has-text-grey">
+                  {{ user.u_email }}
+                  {% if u.emailConfirmed != true %}
+                    (not verified)
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </li>
+    {% endfor %}
+    </ul>
+
+  </div>
+
+  <div id="invite-modal" class="modal">
+    <div class="modal-background modal-dismiss"></div>
+    <div class="container is-max-desktop">
+      <div class="modal-card" style="width: 100%;">
+        <section class="modal-card-body" style="border-radius: 8px; margin-top: 100px;">
+          <div class="content has-text-centered">
+            <h2 class="">Invite a user to your team</h2><br/>
+          </div>
+          {{> invite}}
+        </section>
+      </div>
+    </div>
+    <div class="container is-max-desktop">
+      <button class="modal-close is-large modal-dismiss" aria-label="close"></button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{{ seo_title }}</title>
+  <meta name="description" content="{{ seo_description }}">
+  <meta name="keywords" content="">
+  <meta name="author" content="">
+  {{ html_google_analytics }}
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ root_assets }}/assets/css/bundle.css">
+  <link rel="icon" type="image/png" href="{{ root_assets }}/assets/img/freight.svg" />
+
+  {{ html_payments_processor }}
+  <script type="module">
+  if (typeof stripe !== 'undefined') {
+    const elements = stripe.elements();
+
+    // Custom styling can be passed to options when creating an Element.
+    var style = {
+      base: {
+        // Add your base input styles here. For example:
+        fontSize: '16px',
+      },
+    };
+
+    const deleteUserLink = document.getElementById('delete-user');
+    if (deleteUserLink) {
+      // Create a token or display an error when the form is submitted.
+      deleteUserLink.addEventListener('click', function(event) { 
+        const confirmDelete = confirm('Are you sure you want to delete your user?');
+        if(confirmDelete) {
+          fetch('/api/v1/user/{{ user.id }}', {
+              method: 'delete',
+              headers: {
+                'Content-type': 'application/json',
+                'CSRF-Token': "{{ csrf_token }}" // <-- is the csrf token as a header
+              },
+            })
+            .then((response) => {
+              window.location = '/logout'
+            })
+        }
+      });
+    }
+
+
+    // Create an instance of the card Element.
+    var card = elements.create('card', {style});
+
+    // Add an instance of the card Element into the `card-element` <div>.
+    card.mount('#card-element');
+
+    // This is where your scripr might change. It must fetch from your page
+    // the plan id and the payment method id. In addition it can accept a monthly flag
+    // to indicate that the monthly payment is required.
+    // Finally, it needs the CSRF token.
+
+    // 1. Attaching a listener to the form submit event
+    const paymentForm = document.getElementById('payment-form');
+    if (paymentForm) {
+      paymentForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Getting value out of form.
+        const data = new FormData(document.getElementById('payment-form'));
+        const params = {}
+        for (const [name,value] of data) {
+          params[name] = value
+        }
+
+        if(params.plan && params.method) {
+          // here we call the Stripe library passing: 
+          // 1. the parameters we got from our page
+          // 2. a success callback
+          // 3. an error callback
+          createSubscription(
+            params,
+            _ => alert('Purchase completed'),
+            event => alert(event.error.message)
+          )
+        }
+        else
+          alert('Choose a plan and a payment method')
+      });
+    }
+
+    let buyPlanButttons = document.getElementsByClassName("plan-purchase-button");
+
+    for(let i = 0; i < buyPlanButttons.length; i++) {
+      buyPlanButttons[i].onclick = function (e) {
+          e.preventDefault()
+
+          const payYearlySwitch = document.querySelector('#priceSwitch:checked');
+          const monthly = payYearlySwitch && payYearlySwitch.value === 'on' ? null : 1
+
+          const plan = e.target.id
+
+          fetch('/api/v1/purchase-plan', {
+              method: 'post',
+              headers: {
+                'Content-type': 'application/json',
+                'CSRF-Token': "{{ csrf_token }}" // <-- is the csrf token as a header
+              },
+              body: JSON.stringify({
+                plan, monthly
+              }),
+            })
+            .then((response) => {
+              location.reload();
+            })
+        }
+    }
+
+
+    const paymentMethodForm = document.getElementById('payment-method');
+    if (paymentMethodForm) {
+      // Create a token or display an error when the form is submitted.
+      paymentMethodForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // stripe.createToken(card)
+        stripe
+        .createPaymentMethod({
+          type: 'card',
+          card: card,
+          // billing_details: {
+            // name: billingName,
+          // },
+        })
+        .then(function(result) {
+          if (result.error) {
+            // Inform the customer that there was an error.
+            var errorElement = document.getElementById('card-errors');
+            errorElement.textContent = result.error.message;
+          } else {
+            // Send the token to your server.
+            // stripeTokenHandler(result.token);
+            fetch('/api/v1/add-payment-token', {
+              method: 'post',
+              headers: {
+                'Content-type': 'application/json',
+                'CSRF-Token': "{{ csrf_token }}" // <-- is the csrf token as a header
+              },
+              body: JSON.stringify({
+                ...result.paymentMethod
+              }),
+            })
+            .then((response) => {
+              location.reload();
+            })
+          }
+        });
+      });
+
+    }
+  } // end if stripe
+  </script>
+
+</head>
+<body>
+  {% render layout_nav, logo: logo, user: user %}
+
+  
+  {% if alert and alert.text %}
+    {% case alert.type %}
+      {% when "critical" %}
+        {% assign alert_class = "is-danger" %}
+      {% when "warning" %}
+        {% assign alert_class = "is-warning" %}
+      {% else %}
+        {% assign alert_class = "is-danger" %}
+    {% endcase %}
+    <div class="notification  has-text-centered mb-0">
+      {{ alert.text }}
+      <a class="" href="{{ alert.link_url }}">{{ alert.link_text }}</a>
+    </div>
+  {% endif %}
+  
+  <section class="hero is-dark">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+      	<div class="columns is-vcentered">
+      	  <div class="column">
+  
+            <h1 class="title">
+              Account Settings
+            </h1>
+  
+            <p>Settings for {{ user.email }}</p>
+  
+          </div>
+          <div class="column has-text-right">
+            <a href="/logout" class="button is-light">Log out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section has-background-white-bis" style="overflow: visible!important;">
+    <div class="container is-max-desktop" style="margin-top: -120px;">
+      <div class="columns">
+  
+        <div class="column is-one-quarter">
+  
+          <div class="card">
+            <div class="card-content">
+  
+              <aside class="menu">
+                <p class="menu-label">
+                  Accounts
+                </p>
+                <ul class="menu-list">
+  
+                  {% for page in user_page_sections %}
+  
+                  {% if page == 'general' %}
+                  {% if user_page == 'general' %}
+                  <li><a href="/user" class="is-active">General</a></li>
+                  {% else %}
+                  <li><a href="/user">General</a></li>
+                  {% endif %}
+                  {% endif %}
+  
+                  {% if page == 'security' %}
+                  {% if user_page == 'security' %}
+                  <li><a href="/user/security" class="is-active">Security</a></li>
+                  {% else %}
+                  <li><a href="/user/security">Security</a></li>
+                  {% endif %}
+                  {% endif %}
+  
+                  {% if page == 'billing' %}
+                  {% if user_page == 'billing' %}
+                  <li><a href="/user/billing" class="is-active">Billing</a></li>
+                  {% else %}
+                  <li><a href="/user/billing">Billing</a></li>
+                  {% endif %}
+                  {% endif %}
+  
+                  {% if page == 'team' %}
+                  {% if user_page == 'team' %}
+                  <li><a href="/user/team" class="is-active">Users</a></li>
+                  {% else %}
+                  <li><a href="/user/team">Users</a></li>
+                  {% endif %}
+                  {% endif %}
+  
+                  {% endfor %}
+  
+                </ul>
+              </aside>
+  
+            </div>
+          </div>
+  
+        </div>
+  
+        <div class="column">
+  
+          {% if user_page == 'general' %}
+          {% assign size = "" %}
+          <div class="card mb-6">
+            <div class="card-content content">
+          
+              <h3 class="has-text-weight-normal">Basic Information</h3><br/>
+          
+              <form action="/user/profile" method="POST" class="mb-40">
+                <div class="field">
+                  <div class="field-body">
+          
+                    <div class="field">
+                      <label for="name" class="label  has-text-weight-normal">
+                        Name
+                      </label>
+                      <div class="control">
+                        <input type="text" class="input " id="name" name="name" placeholder="Name" value="{{ user.user_name }}">
+                      </div>
+                      <p id="error-first" class="help is-danger"></p>
+                    </div>
+                  </div>
+                </div>
+          
+                <div class="field">
+                  <label for="company" class="label  has-text-weight-normal">
+                    Company
+                  </label>
+                  <div class="control">
+                    <input type="text" class="input " id="company" name="company" placeholder="Company" value="{{ account.company }}">
+                  </div>
+                  <p id="error-company" class="help is-danger"></p>
+                </div>
+          
+                {% if signup_show_username %}
+                <div class="field">
+                  <label for="company" class="label  has-text-weight-normal">
+                    Username
+                  </label>
+                  <div class="control">
+                    <input type="text" class="input " id="username" name="username" placeholder="username" value="{{ user.username }}">
+                  </div>
+                  <p id="error-username" class="help is-danger"></p>
+                </div>
+                {% endif %}
+          
+                <div class="field">
+                  <label for="email" class="label  has-text-weight-normal">
+                    Email address
+                  </label>
+                  <div class="field has-addons">
+                    <div class="control is-expanded">
+                      <input type="email" class="input " id="email" name="email" placeholder="name@address.com" value="{{ user.email }}" autocomplete="username" disabled>
+                    </div>
+                    <div class="control">
+                      <a class="button   is-dark">
+                        Change
+                      </a>
+                    </div>
+                  </div>
+                  <p id="error-email" class="help is-danger">{{ error.email | formatDot }}</p>
+                </div>
+          
+                <br/>
+                <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                <div class="field">
+                  <div class="control">
+                    <button class="button  is-primary" type="submit">Save changes</button>
+                  </div>
+                </div>
+              </form>
+          
+            </div>
+          </div>
+          
+          <p class="has-text-centered">
+            If you no longer want to use {{ name }}, you can <a id="delete-user" class="has-text-danger">delete your account</a>.
+          </p>
+          {% endif %}
+  
+          {% if user_page == 'security' %}
+          {% assign size = "" %}
+          <div class="card mb-6">
+            <div class="card-content content">
+          
+              <h3 class="has-text-weight-normal">Change Password</h3><br/>
+          
+              <form action="/user/password-change" method="POST" class="mb-40">
+          
+                <div class="field">
+                  <label for="password" class="label  has-text-weight-normal">
+                    Current password
+                  </label>
+                  <div class="control">
+                    <input type="password" class="input " id="password" name="password" minlength="8" required>
+                  </div>
+                  <p id="error-password" class="help is-danger">{{ error.password | formatDot }}</p>
+                </div>
+          
+                <div class="field">
+                  <label for="password-new" class="label  has-text-weight-normal">
+                    New password
+                  </label>
+                  <div class="control">
+                    <input type="password" class="input " id="password-new" name="password-new" minlength="8" required>
+                  </div>
+                  <p id="error-password-new" class="help is-danger"></p>
+                </div>
+          
+                <div class="field">
+                  <label for="password-confirm" class="label  has-text-weight-normal">
+                    Confirm new password
+                  </label>
+                  <div class="control">
+                    <input type="password" class="input " id="password-confirm" name="password-confirm" minlength="8" required>
+                  </div>
+                  <p id="error-password-confirm" class="help is-danger"></p>
+                </div>
+          
+                <br/>
+                <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                <div class="field">
+                  <div class="control">
+                    <button class="button  is-primary" type="submit">Update password</button>
+                  </div>
+                </div>
+              </form>
+          
+            </div>
+          </div>
+          {% endif %}
+  
+          {% if user_page == 'billing' %}
+          <div class="card mb-5">
+            <div class="card-content content">
+          
+            	<div class="level">
+                <div class="level-left">
+                  <h3 class="has-text-weight-normal">Current Plan</h3>
+                </div>
+                <div class="level-right">
+                  <h3 class="has-text-weight-normal">{{ active_subscription.currency}}{{ active_subscription.price | divided_by: 100}}/{{ active_subscription.interval}}</h3>
+                </div>
+              </div>
+          
+              <div class="level">
+                <div class="level-left">
+                  <div>
+                    <h3 class="has-text-weight-normal mb-0">{{ active_subscription.name }}</h3>
+                    <p class="has-text-grey">Next payment on {{ active_subscription.next_payment }}</p>
+                  </div>
+                </div>
+                <div class="level-right">
+                  <a class="button is-primary modal-trigger" data-modal="plans-modal">
+                    Change plan
+                  </a>
+                </div>
+              </div>
+          
+          
+              <ul class="pricing-features has-text-left" style="list-style-type: none; margin: 0">
+                {% for feature in active_subscription.data.features %}
+                  <li>
+                    <span class="tag is-success is-light is-rounded">  
+                      <span class="icon is-small">
+                        <i class="fa fa-check"></i>
+                      </span>
+                    </span>
+                    {{ feature.name }}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+          
+          <div class="card mb-5">
+            <div class="card-content content">
+          
+              <div class="level">
+                <div class="level-left">
+                  <h3 class="has-text-weight-normal mb-0">Payment Methods</h3>
+                </div>
+                <div class="level-right">
+                  <a class="button is-primary modal-trigger" data-modal="payment-modal">
+                    Add new
+                  </a>
+                </div>
+              </div>
+          
+              {% assign len = payment_methods.length %}
+              {% if len <= 0 %}
+              <p><a class="modal-trigger" data-modal="payment-modal">Add a payment method.</a></p>
+              {% else %}
+          
+              <ul style="list-style-type: none; margin: 0">
+              {% for method in payment_methods %}
+              {% assign item = method.card %}
+                <li class="mb-5">
+                  <div class="level">
+                    <div class="level-left">
+                      <div class="level-item">
+                        <figure class="image ml-0 mr-4">
+                          <img class="img-fluid" src="{{ root_assets }}/assets/img/icons/payment-methods/{{ item.brand }}.svg" alt="{{ item.brand | capitalize }}" style="max-width: 40px;">
+                        </figure>
+                      </div>
+                      <div class="level-item">
+                        <div>
+                          <p class="mb-0">{{ item.brand | capitalize }} ending in {{ item.last4 }}</p>
+                          <p class="has-text-grey">Expires {{ item.exp_month }}/{{ item.exp_year }}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="level-right">
+                      <div class="level-item">
+                        <span></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+              </ul>
+              {% endif %}
+          
+            </div>
+          </div>
+          
+          {% if false %}
+          <div class="card">
+            <div class="card-content content">
+          
+              <h3 class="has-text-weight-normal">Invoices</h3><br/>
+          
+            </div>
+          </div>
+          {% endif %}
+          
+          <div id="plans-modal" class="modal">
+            <div class="modal-background modal-dismiss"></div>
+            <div class="container is-max-desktop">
+              <div class="modal-card" style="width: 100%;">
+                <section class="modal-card-body" style="border-radius: 8px; flex-grow: 0; margin-top: 100px;">
+                  <div class="content has-text-centered">
+                    <h2 class="">Choose a plan</h2>
+                  </div>
+                      {% if plans[0].price_year > 0 or plans[1].price_year > 0 %}
+                      <div class="content has-text-centered">
+                        <div class="field">
+                          <span>Monthly&nbsp;</span>
+                          <input id="priceSwitch" name="priceSwitch" type="checkbox" class="switch is-rounded" checked="checked" x-data="{checked: true}" @click="$dispatch('pricing-recount', { month: checked })" x-model="checked">
+                          <label for="priceSwitch">Annually</label>
+                        </div>
+                      </div>
+                      {% endif %}
+                  
+                      <div class="pricing-wrap columns pl-6 pr-6">
+                      {% for item in plans %}
+                        <div class="feature-card is-pricing has-text-centered column">
+                          <h3 class="tag is-primary is-light is-uppercase">{{ item.name }}</h3>
+                          <div class="price has-text-weight-normal">
+                            {% if item.price_text %}
+                              {{ item.price_text }}
+                            {% else %}
+                              <span class="pricing-currency">$ </span><span id="pricing{{ item.name }}" class="pricing-count"
+                                x-data="{ price_year: {{ item.price_year }}, price_month: {{ item.price_month }}, price_decimals: {{ item.price_decimals }} }" x-on:pricing-recount.window="window.pricingUpdate($el, $event.detail.month ? price_month : price_year, price_decimals)">{{ item.price_year }}</span><span class="pricing-monthly"> /mo</span>
+                            {% endif %}
+                          </div>
+                  
+                          <ul class="pricing-features has-text-left">
+                          {% for feature in item.features %}
+                            <li>
+                              <span class="tag is-success is-light is-rounded">
+                                <span class="icon is-small">
+                                  <i class="fa fa-check"></i>
+                                </span>
+                              </span>
+                              {{ feature.name }}
+                            </li>
+                          {% endfor %}
+                          </ul>
+                  
+                          {% if item.primary %}
+                          <a id={{ item.id }} class="button is-fullwidth is-medium is-primary plan-purchase-button" href="{{ item.button_href | default: '/signup' }}">
+                          {% else %}
+                          <a id={{ item.id }} class="button is-fullwidth is-medium is-primary is-light plan-purchase-button" href="{{ item.button_href | default: '/signup' }}">
+                          {% endif %}
+                            {{ item.button }}
+                          </a>
+                        </div>
+                      {% endfor %}
+                      </div>
+                </section>
+              </div>
+            </div>
+            <div class="container is-max-desktop">
+              <button class="modal-close is-large modal-dismiss" aria-label="close"></button>
+            </div>
+          </div>
+          
+          <div id="payment-modal" class="modal">
+            <div class="modal-background modal-dismiss"></div>
+            <div class="modal-card">
+              <section class="modal-card-body" style="border-radius: 8px; margin-top: 100px;">
+                <div class="content has-text-centered">
+                  <h2 class="">Add a payment method</h2><br/>
+                </div>
+                    <form action="" id="payment-method" method="POST" class="mb-20">
+                
+                      <div class="field">
+                        <div id="card-element">
+                          <!-- A Stripe Element will be inserted here. -->
+                        </div>
+                      </div>
+                
+                      <p id="error-card-number" class="help is-danger mb-0"></p>
+                
+                      <br/>
+                      <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                      <div class="field">
+                        <div class="control">
+                          <button class="button is-primary" type="submit">Add card</button>
+                        </div>
+                      </div>
+                    </form>
+                
+                
+                  </form>
+              </section>
+            </div>
+            <div class="container is-max-desktop">
+              <button class="modal-close is-large modal-dismiss" aria-label="close"></button>
+            </div>
+          </div>
+          {% endif %}
+  
+          {% if user_page == 'team' %}
+          <div class="card">
+            <div class="card-content content">
+          
+              <div class="level">
+                <div class="level-left">
+                  <h3 class="has-text-weight-normal mb-0">Your Team</h3>
+                </div>
+                <div class="level-right">
+                  <a class="button is-primary modal-trigger" data-modal="invite-modal">
+                    Add new
+                  </a>
+          
+                </div>
+              </div>
+          
+              <ul style="list-style-type: none; margin: 0">
+              {% for u in account_users %}
+                <li class="mb-5">
+                  <div class="level">
+                    <div class="level-left">
+                      <div class="level-item">
+                        <div>
+                          <p class="mb-0">{{ u.profile.name | default: "(No name specified)" }}</p>
+                          <p class="has-text-grey">
+                            {{ u.email }}
+                            {% if u.emailConfirmed != true %}
+                              (not verified)
+                            {% endif %}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="level-right">
+                      <div class="level-item">
+                        <span></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+              </ul>
+          
+            </div>
+          
+            <div id="invite-modal" class="modal">
+              <div class="modal-background modal-dismiss"></div>
+              <div class="container is-max-desktop">
+                <div class="modal-card" style="width: 100%;">
+                  <section class="modal-card-body" style="border-radius: 8px; margin-top: 100px;">
+                    <div class="content has-text-centered">
+                      <h2 class="">Invite a user to your team</h2><br/>
+                    </div>
+                        <form action="" method="POST" class="mb-20">
+                    
+                          <div class="field">
+                            <label for="full-name" class="label has-text-weight-normal">
+                              Name
+                            </label>
+                            <div class="control">
+                              <input type="text" class="input" id="name" name="name" placeholder="John Doe" value="">
+                            </div>
+                          </div>
+                    
+                    
+                          <div class="field">
+                            <label for="full-name" class="label has-text-weight-normal">
+                              Email
+                            </label>
+                            <div class="control">
+                              <input type="text" class="input" id="email" name="email" placeholder="john@example.com" value="">
+                            </div>
+                          </div>
+                    
+                          <p id="error-invite" class="help is-danger mb-0"></p>
+                    
+                          <br/>
+                          <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                          <div class="field">
+                            <div class="control">
+                              <button class="button is-primary" type="submit">Invite user</button>
+                            </div>
+                          </div>
+                        </form>
+                    
+                    
+                      </form>
+                  </section>
+                </div>
+              </div>
+              <div class="container is-max-desktop">
+                <button class="modal-close is-large modal-dismiss" aria-label="close"></button>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+  
+        </div>
+  
+      </div>
+    </div>
+  </section>
+  
+  <footer class="footer">
+    <div class="container is-max-desktop">
+      <div class="columns content">
+        <div class="column is-one-quarter">
+          <div class="footer-logo">
+            <h3 class="is-size-4 has-text-weight-semibold">{{ name }}</h3>
+            <img src="{{ root_assets }}/img/freight.svg">
+          </div>
+          <p>&copy; 2021 {{ legal_company_name }}</p>
+          <div class="level is-mobile">
+          <div class="level-left">
+            {% if social_github %}
+            <a class="level-item has-text-grey" href="{{ social_github }}">
+              <span class="icon">
+                <i class="fab fa-lg fa-github"></i>
+              </span>
+            </a>
+            {% endif %}
+            {% if social_twitter %}
+            <a class="level-item has-text-grey" href="{{ social_twitter }}">
+              <span class="icon">
+                <i class="fab fa-lg fa-twitter"></i>
+              </span>
+            </a>
+            {% endif %}
+            {% if social_linkedin %}
+            <a class="level-item has-text-grey" href="{{ social_linkedin }}">
+              <span class="icon">
+                <i class="fab fa-lg fa-linkedin"></i>
+              </span>
+            </a>
+            {% endif %}
+            {% for item in socials %}
+            <a class="level-item has-text-grey" href="{{ item.url }}">
+              <span class="icon">
+                <i class="fab fa-lg fa-{{ item.name }}"></i>
+              </span>
+            </a>
+            {% endfor %}
+          </div>
+          </div>
+  
+        </div>
+        <div class="column">
+          <div class="columns mt-0">
+  
+            {% for menu in footer %}
+            <div class="column pt-0">
+              <div class="level-right">
+                <div>
+                  <div class="footer-header">
+                    <h3 class="is-size-5 has-text-weight-normal is-uppercase" style="line-height: 1.75rem;margin-bottom: 1rem">{{ menu.title }}</h3>
+                  </div>
+                  <ul class="is-unstyled">
+                    {% for item in menu.links %}
+                    <li><a class="has-text-grey" href="{{ item.url }}">{{ item.name }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+  
+            <div class="column pt-0">
+            <div class="level-right">
+            <div>
+              <div class="footer-header">
+                <h3 class="is-size-5 has-text-weight-normal is-uppercase" style="line-height: 1.75rem;margin-bottom: 1rem">Legal</h3>
+              </div>
+              <ul class="is-unstyled">
+                <li><a class="has-text-grey" href="/privacy-policy">Privacy policy</a></li>
+                <li><a class="has-text-grey" href="/terms-of-service">Terms of service</a></li>
+              </ul>
+            </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ root_assets }}/assets/js/bundle.js"></script>
+</body>
+</html>

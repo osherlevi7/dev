@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{{ seo_title }}</title>
+  <meta name="description" content="{{ seo_description }}">
+  <meta name="keywords" content="">
+  <meta name="author" content="">
+  {{ html_google_tag_manager_header }}
+  {{ html_google_analytics }}
+  {{ html_facebook_pixel }}
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ root_assets }}/assets/css/bundle.css">
+  <link rel="icon" type="image/png" href="{{ root_assets }}/assets/img/freight.svg" />
+</head>
+<body>
+  {{ html_google_tag_manager_body }}
+
+  <nav class="navbar is-fresh is-transparent no-shadow" role="navigation" aria-label="main navigation">
+    <div class="container is-max-desktop is-justify-content-center">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="{{ logo.url }}">
+          <h2 class="is-size-4 has-text-primary has-text-weight-semibold">{{ logo.name }}</h2>
+          <!--img src="{{ root_assets }}/img/freight.svg" alt="" width="112" height="28"-->
+        </a>
+      </div>
+    </div>  </nav>
+  
+  <h1 class="title has-text-centered">
+    {{ page_title }}
+  </h1>
+  <section class="section mb-6">
+    <div class="container is-max-desktop content">
+  
+      <div class="columns">
+        <div class="column is-three-fifths px-6">
+  
+          <section class="section is-size-5 has-text-weight-normal">
+          {{ page_body }}
+          </section>
+  
+        </div>
+        <div class="column card p-5">
+          <div class="card-content">
+            {% assign email_form = root_theme | append: '/email_form' %}
+            {% render email_form %}
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </section>
+  {% assign len = benefits.length %}
+  {% if len > 0 %}
+  <section class="hero is-midheight is-default is-bold pt-6 has-background-white-bis">
+    <div class="has-text-centered">
+      <h2 class="title is-2 is-bold is-spaced">
+        {{ title | formatDot }}
+      </h2>
+      <h3 class="subtitle is-size-5 has-text-grey">{{ hero_subtitle | formatNoOrphanDot }}</h3>
+    </div>
+    <div class="hero-foot mt-6">
+      <div class="container is-max-desktop content">
+        <div class="columns is-6">
+          {% for item in benefits %}
+            <div class="column has-text-centered">
+  
+              <img src="{{ item.image_url }}" alt="{{ item.title | formatDot }}" width="50" />
+  
+              <h4>
+                {{ item.title | formatDot }}
+              </h4>
+  
+              <p class="is-muted has-text-grey">
+                {{ item.text | formatNoOrphanDot }}
+              </p>
+  
+            </div>
+          {% endfor %}
+        </div>
+  
+      </div>
+    </div>
+  </section>
+  {% endif %}
+  
+  <footer class="footer">
+    <div class="container is-max-desktop">
+      <div class="columns content">
+        <div class="column is-one-quarter">
+          <div class="footer-logo">
+            <h3 class="is-size-4 has-text-weight-semibold">{{ name }}</h3>
+            <img src="{{ root_assets }}/img/freight.svg">
+          </div>
+          <p>&copy; 2021 {{ legal_company_name }}</p>
+          <div class="level is-mobile">
+          <div class="level-left">
+            {% if social_github %}
+            <a class="level-item has-text-grey" href="{{ social_github }}">
+              <span class="icon">
+                <i class="fab fa-lg fa-github"></i>
+              </span>
+            </a>
+            {% endif %}
+            {% if social_twitter %}
+            <a class="level-item has-text-grey" href="{{ social_twitter }}">
+              <span class="icon">
+                <i class="fab fa-lg fa-twitter"></i>
+              </span>
+            </a>
+            {% endif %}
+            {% if social_linkedin %}
+            <a class="level-item has-text-grey" href="{{ social_linkedin }}">
+              <span class="icon">
+                <i class="fab fa-lg fa-linkedin"></i>
+              </span>
+            </a>
+            {% endif %}
+            {% for item in socials %}
+            <a class="level-item has-text-grey" href="{{ item.url }}">
+              <span class="icon">
+                <i class="fab fa-lg fa-{{ item.name }}"></i>
+              </span>
+            </a>
+            {% endfor %}
+          </div>
+          </div>
+  
+        </div>
+        <div class="column">
+          <div class="columns mt-0">
+  
+            {% for menu in footer %}
+            <div class="column pt-0">
+              <div class="level-right">
+                <div>
+                  <div class="footer-header">
+                    <h3 class="is-size-5 has-text-weight-normal is-uppercase" style="line-height: 1.75rem;margin-bottom: 1rem">{{ menu.title }}</h3>
+                  </div>
+                  <ul class="is-unstyled">
+                    {% for item in menu.links %}
+                    <li><a class="has-text-grey" href="{{ item.url }}">{{ item.name }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+  
+            <div class="column pt-0">
+            <div class="level-right">
+            <div>
+              <div class="footer-header">
+                <h3 class="is-size-5 has-text-weight-normal is-uppercase" style="line-height: 1.75rem;margin-bottom: 1rem">Legal</h3>
+              </div>
+              <ul class="is-unstyled">
+                <li><a class="has-text-grey" href="/privacy-policy">Privacy policy</a></li>
+                <li><a class="has-text-grey" href="/terms-of-service">Terms of service</a></li>
+              </ul>
+            </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ root_assets }}/assets/js/bundle.js"></script>
+  {{ html_chatbot }}
+</body>
+</html>
