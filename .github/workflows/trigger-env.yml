@@ -10,37 +10,37 @@ env:
 jobs:
   costing-gke-dev:
     name:  Infracost | Develop clustr on GKE (Unsecure)
-    uses: ./.github/workflows/infracost.yaml
+    uses: ./.github/workflows/infracost.yml
     with:
       terraform_env: terraform/gcp/environments/gke/dev
     secrets: inherit
   costing-infra-secure:
     name:  Infracost | Infrastructure on Terraform GKE (secure)
-    uses: ./.github/workflows/infracost.yaml
+    uses: ./.github/workflows/infracost.yml
     with:
       terraform_env: terraform/gcp/environments/infra-secure
     secrets: inherit
   costing-platform-secure:
     name:  Infracost | Infrastructure on Terraform GKE (secure)
-    uses: ./.github/workflows/infracost.yaml
+    uses: ./.github/workflows/infracost.yml
     with:
       terraform_env: terraform/gcp/environments/platfrom-secure
     secrets: inherit
   costing-vertex-ai:
     name:  Infracost | Infrastructure on Terraform VERTEX-DEV
-    uses: ./.github/workflows/infracost.yaml
+    uses: ./.github/workflows/infracost.yml
     with:
       terraform_env: terraform/gcp/environments/vertex-ai/dev
     secrets: inherit
   costing-monitoring-grafana:
     name:  Infracost | Infrastructure on Terraform MONITORING-GRAFANA
-    uses: ./.github/workflows/infracost.yaml
+    uses: ./.github/workflows/infracost.yml
     with:
       terraform_env: terraform/gcp/environments/monitoring-grafana
     secrets: inherit
   costing-k8s-dashboard:
     name:  Infracost | Infrastructure on Terraform K8S-DASHBOARD
-    uses: ./.github/workflows/infracost.yaml
+    uses: ./.github/workflows/infracost.yml
     with:
       terraform_env: terraform/gcp/environments/k8s-dashboard
     secrets: inherit
