@@ -62,7 +62,7 @@ jobs:
       affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
     
   call-checkov:
-    name: Run Checkov terraform SCA
+    name: IF CHANGED | Run Checkov terraform SCA
     needs: [affected-services]
     if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
     uses: ./.github/workflows/checkov-terraform-SCA.yaml

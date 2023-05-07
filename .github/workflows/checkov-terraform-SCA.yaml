@@ -3,6 +3,7 @@ name: JOB | Checkov terraform code static code analysis.
 # on:
   # push:
   #   branches: ["main", "feature/**", "fix/**"]
+# Call form another workflow with the service params that has been changed. 
 on:
   workflow_call: 
     inputs:
@@ -40,5 +41,3 @@ jobs:
           # container_user: 1000 # optional: Define what UID and / or what GID to run the container under to prevent permission issues
           # use_enforcement_rules: true # optional - use enforcement rule configs from the platform
           # github_pat: ${{ secrets.GH_PAT }}  # To give checkov the possibility to download private GitHub modules you need to pass a valid GitHub PAT with the needed permissions.
-
-
