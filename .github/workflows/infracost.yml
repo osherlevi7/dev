@@ -16,7 +16,7 @@ jobs:
       pull-requests: write
 
     env:
-      TF_ROOT: terraform/environments/${{ inputs.terraform_env }}
+      TF_ROOT: ${{ inputs.terraform_env }}
 
     steps:
 
@@ -40,7 +40,7 @@ jobs:
 
       # Checkout the current PR branch so we can create a diff.
       - name: Checkout PR branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       # Generate an Infracost diff and save it to a JSON file.
       - name: Generate Infracost diff
