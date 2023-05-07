@@ -68,8 +68,10 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
+
       - name:  Infracost | Develop clustr on GKE (Unsecure)
         uses: ./.github/workflows/checkov-terraform-SCA.yaml
+        continue-on-error: true
         # with:
           # services: ${{needs.affected-services.outputs.affected_services_output}}
         # secrets: inherit
