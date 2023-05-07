@@ -8,12 +8,12 @@ defaults:
 env:
   TARGET_BRANCH: ${{ github.base_ref }}
 jobs:
-  costing-gke-dev:
-    name:  Infracost | Develop clustr on GKE (Unsecure)
-    uses: ./.github/workflows/infracost.yaml
-    with:
-      terraform_env: terraform/gcp/environments/gke/dev
-    secrets: inherit
+  # costing-gke-dev:
+  #   name:  Infracost | Develop clustr on GKE (Unsecure)
+  #   uses: ./.github/workflows/infracost.yaml
+  #   with:
+  #     terraform_env: terraform/gcp/environments/gke/dev
+  #   secrets: inherit
   costing-infra-secure:
     name:  Infracost | Infrastructure on Terraform GKE (secure)
     uses: ./.github/workflows/infracost.yaml
@@ -24,7 +24,7 @@ jobs:
     name:  Infracost | Infrastructure on Terraform GKE (secure)
     uses: ./.github/workflows/infracost.yaml
     with:
-      terraform_env: terraform/gcp/environments/platfrom
+      terraform_env: terraform/gcp/environments/platfrom-secure
     secrets: inherit
 
   costing-vertex-ai:
