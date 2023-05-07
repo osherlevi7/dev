@@ -1,0 +1,7 @@
+version: "3.1"
+services:
+  saasform-db:
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./src/e2e-test/data/db:/var/lib/mysql:cached

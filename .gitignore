@@ -4,7 +4,7 @@
 utilities/logfile.log
 allure-report
 report.html
-assets
+# assets
 codiga.yaml
 codiga.yml
 __pycache__

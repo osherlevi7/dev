@@ -1,0 +1,161 @@
+# main
+name: Importer.ai
+title: Meet the new AI import management tool.
+description: Costum intereduction, Shiping AI advisure & tracker, progress shiping status, letancy AI forcasing and much more...
+domain_primary: importer.ai
+email: info@importer.ai
+
+# integrations
+app_google_analytics: G-xxx
+app_google_tag_manager: GTM-xxx
+app_facebook_pixel_id: 123xxx
+# app_chatbot_provider: hubspot, intercom, chaskiq
+app_chatbot_provider:
+app_chatbot_id: 123xxx
+# app_chatbot_domain for self hosted chatbots
+app_chatbot_domain:
+
+# footer
+legal_company_name: Importer.ai  
+made_with_love: Made with ❤️ for U 
+socials:
+  - name: linkedin
+    url: https://linkedin.com/importer.io
+
+# nav
+nav_links:
+  login_text: Log in
+  login_url: /login
+  signup_text: Sign up
+  signup_url: /signup
+
+# home
+hero_image_url: assets/img/illustrations/illustration-7.png
+hero_subtitle: Customs interaction around the world, Shipping AI advisor & tracker, Progress status, Latency AI forecasting, and much more..
+hero_cta: Get started now
+benefits:
+  - title: Lorem ipsum dolor sit amet
+    text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    image_url: assets/img/icons/duotone-icons/General/Star.svg 
+  - title: Lorem ipsum dolor sit amet
+    text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    image_url: assets/img/icons/duotone-icons/Weather/Rainbow.svg 
+    position: left
+  - title: Lorem ipsum dolor sit amet
+    text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    image_url: assets/img/icons/duotone-icons/General/Heart.svg 
+logos:
+  - name: Twitter
+    image_url: assets/img/brands/logotype/twitter.svg
+  - name: Facebook
+    image_url: assets/img/brands/logotype/facebook.svg
+  - name: Pinterest
+    image_url: assets/img/brands/logotype/pinterest.svg
+  - name: LinkedIn
+    image_url: assets/img/brands/logotype/linkedin.svg
+features:
+  - image_url: assets/img/illustrations/illustration-4.png
+    title: Manage any importation process around the world. 
+    text: Upload import documents and the system will send them to customs automatically, any mistype file will be correct automatically via Artifactory Intelligent. 
+  - image_url: assets/img/illustrations/illustration-9.png
+    title: Track any part from your import.
+    text:  No big team is required to engage and interact with the customs, improve your business, and easy to use.
+  - image_url: assets/img/illustrations/illustration-3.png
+    title: Saving your money.
+    text: Dashboard view of any sorted shipment from your import, Analytics data from your import, and improvement solutions for your business. 
+testimonials_title: Our customers are our biggest fans
+testimonials_text: We don't like to brag, but we don't mind letting our customers do it for us. Here are a few nice things people are saying
+testimonials:
+  - name: Melinda Gates
+    image_url: https://pbs.twimg.com/profile_images/1054713372845862912/1SR434Pr_400x400.jpg
+    quote: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  - name: Warren Buffet
+    image_url: https://pbs.twimg.com/profile_images/1311637823804649474/-8Oyj6ep_400x400.jpg
+    quote: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+pricing_title: Fair, simple pricing
+pricing_text:
+pricing_free_trial: 30
+pricing_credit_card_required: false
+pricing_plans:
+  # # Example of a free plan (i.e. both prices are $0)
+  # # Optional, set price_text instead of showing $0
+  # # Recommended: set pricing_free_trial: 0 above
+  - name: Free
+    price_year: 0
+    price_month: 0
+    price_decimals: 0
+    price_text: Free
+    button: Choose
+    features:
+      - name: Lorem ipsum
+      - name: Dolor sit amet
+      - name: Consectetur
+      - name: Adipiscing elit
+  - name: Starter
+    price_year: 29
+    price_month: 35
+    price_decimals: 0
+    button: Choose
+    features:
+      - name: Lorem ipsum
+      - name: Dolor sit amet
+      - name: Consectetur
+      - name: Adipiscing elit
+  - name: Pro
+    price_year: 99
+    price_month: 120
+    price_decimals: 0
+    button: Choose
+    primary: true
+    features:
+      - name: Lorem ipsum
+      - name: Dolor sit amet
+      - name: Consectetur
+      - name: Adipiscing elit
+  - name: Enterprise
+    price_text: Let's talk
+    button: Contact us
+    button_href: mailto:support@importer.ai
+    features:
+      - name: Lorem ipsum
+      - name: Dolor sit amet
+      - name: Consectetur
+      - name: Adipiscing elit
+faq:
+  - question: Lorem ipsum dolor sit amet?
+    answer: Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+  - question: Lorem ipsum dolor sit amet?
+    answer: Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+  - question: Lorem ipsum dolor sit amet?
+    answer: Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+  - question: Lorem ipsum dolor sit amet?
+    answer: Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+cta_badge: Get started
+cta_title: Get Importer now!
+cta_text: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+cta_button: Get started for free
+
+# signup
+signup_show_username: false
+signup_force_payment: false
+security_two_factor_auth: false
+# footer menu
+footer:
+  - title: Industries
+    links:
+      - name: Productivity
+        url: /industry-productivity
+      - name: Security
+        url: /industry-security
+      - name: Finance
+        url: /industry-finance
+  - title: Company
+    links:
+      - name: About us
+        url: /about
+      - name: Mission
+        url: /mission
+      - name: Team
+        url: /team
+      - name: Contact us
+        url: /contact
