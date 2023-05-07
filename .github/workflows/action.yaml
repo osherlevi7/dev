@@ -52,12 +52,24 @@ jobs:
             echo "$file was changed"
           if [[ "$file" == ** ]] ; then
             affected_services+=("Some Files has been changed.") ; fi
+          if [[ "$file" == terraform/** ]]; then
+            affected_services+=("terraform") ; fi
           done
           without_dups=$(echo ${affected_services[@]} | xargs -n1 | sort -u | xargs)
           parsed=$(IFS='|';echo "${without_dups[*]// /|}";IFS=$' \t\n') && echo $parsed
           echo "affected_services_output=$parsed" >> $GITHUB_OUTPUT
     outputs:
       affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
+    
+  call-checkov:
+    needs: [affected-services]
+    if: affected_services_output
+    steps:
+      - name:  Infracost | Develop clustr on GKE (Unsecure)
+        uses: ./.github/workflows/more-actions/checkov-terraform-SCA.yaml
+        with:
+          services: ${{needs.affected-services.outputs.affected_services_output}}
+        # secrets: inherit
 
   # setup-build-push:
   #   needs: [affected-services]
