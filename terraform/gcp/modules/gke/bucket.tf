@@ -10,3 +10,4 @@ resource "google_storage_bucket" "backend" {
     "project" = var.project_id
   }
 }
+
