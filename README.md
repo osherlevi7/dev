@@ -2,9 +2,9 @@
 ## 🚀 Github Stats
 
 ![github contribution grid snake animation](https://raw.githubusercontent.com/platane/platane/output/github-contribution-grid-snake-dark.svg#gh-dark-mode-only)![github contribution grid snake animation](https://raw.githubusercontent.com/platane/platane/output/github-contribution-grid-snake.svg#gh-light-mode-only)
-
+<!-- 
 <details>
-  <summary> :zap: Expand me</summary>
+  <summary> :zap: Expand me</summary> -->
 
 ![Adityacprtm's github stats](https://github-readme-stats.vercel.app/api?username=osherlevi7&show_icons=true&hide_border=true&hide=contribs,prs&theme=dark "Adityacprtm's github stats")
 
