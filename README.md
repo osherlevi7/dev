@@ -42,7 +42,7 @@
 <details>
   <summary> :zap: Expand me</summary>
 
-![Adityacprtm's github stats](https://github-readme-stats.vercel.app/api?username=adityacprtm&show_icons=true&hide_border=true&hide=contribs,prs&theme=dark "Adityacprtm's github stats")
+![Adityacprtm's github stats](https://github-readme-stats.vercel.app/api?username=osherlevi7&show_icons=true&hide_border=true&hide=contribs,prs&theme=dark "Adityacprtm's github stats")
 
 <!--START_SECTION:waka-->
 ![Code Time](http://img.shields.io/badge/Code%20Time-1%2C400%20hrs%2029%20mins-blue)
