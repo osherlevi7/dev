@@ -1,4 +1,18 @@
 
+## 🚀 Github Stats
+
+![github contribution grid snake animation](https://raw.githubusercontent.com/platane/platane/output/github-contribution-grid-snake-dark.svg#gh-dark-mode-only)![github contribution grid snake animation](https://raw.githubusercontent.com/platane/platane/output/github-contribution-grid-snake.svg#gh-light-mode-only)
+
+<details>
+  <summary> :zap: Expand me</summary>
+
+![Adityacprtm's github stats](https://github-readme-stats.vercel.app/api?username=osherlevi7&show_icons=true&hide_border=true&hide=contribs,prs&theme=dark "Adityacprtm's github stats")
+
+<!--START_SECTION:waka-->
+![Code Time](http://img.shields.io/badge/Code%20Time-1%2C400%20hrs%2029%20mins-blue)
+
+![Lines of code](https://img.shields.io/badge/From%20Hello%20World%20I%27ve%20Written-137.3%20million%20lines%20of%20code-blue)
+
 > osher.levi7@gmail.com
 
 [![github release version](https://img.shields.io/github/v/release/osherlevi7/dev.svg?include_prereleases)](https://github.com/osherlevi7/dev/releases/latest) [![license](https://img.shields.io/github/license/osherlevi7/dev.svg)](https://github.com/osherlevi7/dev/blob/master/LICENSE) [![PRs welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg)](https://github.com/osherlevi7/dev/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) [![code with hearth by Osher Levi](https://img.shields.io/badge/%3C%2F%3E%20with%20%E2%99%A5%20by-OsherLevi-ff1414.svg)](https://github.com/osherlevi7) [![Linkedin](https://img.shields.io/static/v1?label=linkedin&message=click&color=blue)](https://www.linkedin.com/public-profile/settings?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_self_edit_contact-info%3BTPxM3fAmTQC%2BDAp3TG3Jew%3D%3D)
@@ -34,17 +48,3 @@
 
 # ![Brain_Dev_Opsing](/assets/main.png)
 
-
-## 🚀 Github Stats
-
-![github contribution grid snake animation](https://raw.githubusercontent.com/platane/platane/output/github-contribution-grid-snake-dark.svg#gh-dark-mode-only)![github contribution grid snake animation](https://raw.githubusercontent.com/platane/platane/output/github-contribution-grid-snake.svg#gh-light-mode-only)
-
-<details>
-  <summary> :zap: Expand me</summary>
-
-![Adityacprtm's github stats](https://github-readme-stats.vercel.app/api?username=osherlevi7&show_icons=true&hide_border=true&hide=contribs,prs&theme=dark "Adityacprtm's github stats")
-
-<!--START_SECTION:waka-->
-![Code Time](http://img.shields.io/badge/Code%20Time-1%2C400%20hrs%2029%20mins-blue)
-
-![Lines of code](https://img.shields.io/badge/From%20Hello%20World%20I%27ve%20Written-137.3%20million%20lines%20of%20code-blue)
