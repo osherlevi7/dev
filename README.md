@@ -1,4 +1,13 @@
 
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/osherlevi7/dev">
+    <img src="assets/main.png" alt="Logo" width="80" height="80">
+  </a>
+
+<h3 align="center">DEV-OPS</h3>
+
 ## 🚀 Github Stats
 
 ![github contribution grid snake animation](https://raw.githubusercontent.com/platane/platane/output/github-contribution-grid-snake-dark.svg#gh-dark-mode-only)![github contribution grid snake animation](https://raw.githubusercontent.com/platane/platane/output/github-contribution-grid-snake.svg#gh-light-mode-only)
@@ -46,5 +55,4 @@
 | Yes | 11+ | Yes | Yes | Yes |
 
 
-# ![Brain_Dev_Opsing](/assets/main.png)
 
