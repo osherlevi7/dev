@@ -1,0 +1,4 @@
+apiVersion: v1
+name: robot-shop
+version: 1.0.0
+description: Sample micoservices application
