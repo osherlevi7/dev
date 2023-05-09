@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  KubernetesConfigMapAWSAuthUsers:
+    Type: AWS::Kubernetes::ConfigMap
+    Properties:
+      Name: aws-auth
+      Namespace: kube-system
+      Data:
+        mapUsers: !Sub |
+          ${adminUserMapUsers}${developerUserMapUsers}
+      Force: true
+    DependsOn:
+      - EKS
+
+  KubernetesClusterRoleIAMRolesDevelopers:
+    Type: AWS::Kubernetes::ClusterRole
+    Properties:
+      RoleName: !Sub "${NamePrefix}-developers"
+      Rules:
+        - ApiGroups: ["*"]
+          Resources: ["pods", "pods/log", "deployments", "ingresses", "services"]
+          Verbs: ["get", "list"]
+        - ApiGroups: ["*"]
+          Resources: ["pods/exec"]
+          Verbs: ["create"]
+        - ApiGroups: ["*"]
+          Resources: ["pods/portforward"]
+          Verbs: ["*"]
+
+  KubernetesClusterRoleBindingIAMRolesDevelopers:
+    Type: AWS::Kubernetes::ClusterRoleBinding
+    Properties:
+      Name: !Sub "${NamePrefix}-developers"
+      RoleRef:
+        ApiGroup: rbac.authorization.k8s.io
+        Kind: ClusterRole
+        Name: !Sub "${NamePrefix}-developers"
+      Subjects:
+        - Name: admin_user
+          Kind: User
+          ApiGroup: rbac.authorization.k8s.io
+        - Name: developer_user
+          Kind: User
+          ApiGroup: rbac.authorization.k8s.io
+    DependsOn:
+      - KubernetesClusterRoleIAMRolesDevelopers
+Parameters:
+  NamePrefix:
+    Type: String
+    Default: my-app
+  AdminUsers:
+    Type: CommaDelimitedList
+    Default: admin1,admin2
+  DeveloperUsers:
+    Type: CommaDelimitedList
+    Default: dev1,dev2
+
+
+# I made a few assumptions about the parameter names and types,
+# as well as the default values for the AdminUsers and DeveloperUsers parameters.

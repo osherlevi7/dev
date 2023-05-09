@@ -1,0 +1,50 @@
+Parameters:
+  ClusterAddons:
+    Description: Which cluster addons should we create
+    Type: CommaDelimitedList
+    Default: "coredns, kube-proxy, vpc-cni"
+  EnableAddons:
+    Description: If to enable addons like github runner
+    Type: Number
+    Default: 0
+  NumZones:
+    Description: How many zones should we utilize for the eks nodes
+    Type: Number
+    Default: 2
+  K8sVersion:
+    Description: Which version of k8s to install by default
+    Type: String
+    Default: "1.23"
+  ClusterName:
+    Description: k8s cluster name
+    Type: String
+    Default: "eks"
+  VpcCidr:
+    Description: VPC CIDR
+    Type: String
+    Default: "10.137.0.0/16"
+  VpcName:
+    Description: VPC Name
+    Type: String
+    Default: "eks-vpc"
+  AwsRegion:
+    Description: AWS region
+    Type: String
+    Default: "ap-northeast-1"
+  NamePrefix:
+    Type: String
+    Description: Prefix to be used on each infrastructure object Name created in AWS.
+    Default: "eks"
+  AdminUsers:
+    Type: CommaDelimitedList
+    Description: List of Kubernetes admins
+    Default: "mike"
+  DeveloperUsers:
+    Type: CommaDelimitedList
+    Description: List of Kubernetes developers
+    Default: "api-user"
+  DomainName:
+    Type: String
+    Description: CI ingress domain name
+    Default: "domain.eks.com"
+

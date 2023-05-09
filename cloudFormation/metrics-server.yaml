@@ -1,0 +1,20 @@
+# I assumed that you are using App Mesh and that you have a resource named AppMeshVirtualNode that the HelmReleaseMetrics resource depends on.
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  HelmReleaseMetrics:
+    Type: AWS::AppMesh::VirtualNode
+    Properties:
+      Chart: "metrics-server"
+      Namespace: "kube-system"
+      ReleaseName: "metrics-server"
+      Version: "6.1.2"
+      Repository: "https://charts.bitnami.com/bitnami"
+      Values: |
+        extraArgs:
+          - --kubelet-insecure-tls=true
+          - --kubelet-preferred-address-types=InternalIP
+        apiService:
+          create: true
+    DependsOn:
+      - EKS
+      - AppMeshVirtualNode # assuming App Mesh is also used and has a resource named AppMeshVirtualNode

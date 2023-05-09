@@ -1,0 +1,27 @@
+Resources:
+  CmNamespace:
+    Type: 'AWS::EKS::Namespace'
+    Properties:
+      Name: cert-manager
+
+  CmHelmRelease:
+    Type: 'AWS::EKS::HelmChart'
+    Condition: EnableAddons
+    Properties:
+      ClusterName: !Ref ClusterName
+      ReleaseName: cm
+      Chart:
+        Name: cert-manager
+        Repository: https://charts.jetstack.io
+        Version: v1.9.1
+      Namespace: !Ref CmNamespace
+      CreateNamespace: true
+      Values: |
+        global:
+          podSecurityPolicy:
+            enabled: true
+            useAppArmor: true
+          prometheus:
+            enabled: false
+          installCRDs: true
+

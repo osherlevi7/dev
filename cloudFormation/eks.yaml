@@ -1,0 +1,62 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  EKSEncryptionByDefault:
+    Type: "AWS::EBS::EncryptionByDefault"
+    Properties:
+      Enabled: true
+  EKSKMSKey:
+    Type: "AWS::KMS::Key"
+    Properties:
+      Description: "EKS Secret Encryption Key"
+  EKSModule:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      Parameters:
+        ClusterName: !Ref "ClusterName"
+        K8sVersion: !Ref "K8sVersion"
+        SubnetIds: !Select [0, !Split [",", !ImportValue "PrivateSubnets"]]
+        VpcId: !ImportValue "VpcId"
+      TemplateURL: "https://s3.amazonaws.com/aws-quickstart/quickstart-eks/templates/amazon-eks-nodegroup.yaml"
+      TimeoutInMinutes: 30
+  EKSAddon:
+    Type: "AWS::EKS::Addon"
+    DependsOn: EKSModule
+    Properties:
+      ClusterName: !Ref "ClusterName"
+      AddonName: !If [HasAddonName, !Ref "AddonName", !Ref "AWS::NoValue"]
+      AddonVersion: !If [HasAddonVersion, !Ref "AddonVersion", !Ref "AWS::NoValue"]
+      ResolveConflicts: !If [HasResolveConflicts, !Ref "ResolveConflicts", !Ref "AWS::NoValue"]
+      ServiceAccountRoleArn: !If [HasServiceAccountRoleArn, !Ref "ServiceAccountRoleArn", !Ref "AWS::NoValue"]
+      Tags:
+        Terraform: "True"
+Parameters:
+  ClusterName:
+    Type: "String"
+  K8sVersion:
+    Type: "String"
+  PrivateSubnets:
+    Type: "String"
+  VpcId:
+    Type: "String"
+  HasAddonName:
+    Type: "String"
+    Default: "false"
+  AddonName:
+    Type: "String"
+  HasAddonVersion:
+    Type: "String"
+    Default: "false"
+  AddonVersion:
+    Type: "String"
+  HasResolveConflicts:
+    Type: "String"
+    Default: "false"
+  ResolveConflicts:
+    Type: "String"
+  HasServiceAccountRoleArn:
+    Type: "String"
+    Default: "false"
+  ServiceAccountRoleArn:
+    Type: "String"
+

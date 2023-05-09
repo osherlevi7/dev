@@ -1,0 +1,35 @@
+#  I used !Ref to reference the values of the CloudFormation parameters (S3StateBucket and DynamoDBTableName)
+#  that correspond to var.s3_state_bucket and var.dynamodb_table_name in Terraform.
+#  If these parameters have different names in your CloudFormation stack, you should adjust the !Ref statements accordingly.
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  S3BucketTerraformState:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref 'S3StateBucket'
+      LifecycleConfiguration:
+        Rules:
+          - Id: PreventBucketDeletion
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+          - Id: ExpireOldVersions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 90
+      VersioningConfiguration:
+        Status: Enabled
+      ServerSideEncryptionConfiguration:
+        ServerSideEncryptionRules:
+          - ApplyServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+  DynamoDBTableTerraformLocks:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Ref 'DynamoDBTableName'
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: LockID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: LockID
+          KeyType: HASH

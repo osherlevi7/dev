@@ -38,6 +38,7 @@
 - [Devops Scripts](/scripts/)
 - [Applications](/services/)
 - [Terroform IAC Projects](/terraform/)
+- [CloudFormation IAC Projects](/cloudFormation/)
 
 
 <!-- ## 📦 Releases -->

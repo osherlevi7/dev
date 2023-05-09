@@ -1,0 +1,78 @@
+Resources:
+  KarpenterIRSA:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: 'https://aws-quickstart.s3.amazonaws.com/quickstart-hashicorp-terraform-3/modules/terraform-aws-modules/iam/aws/4.21.1/templates/iam-role-for-service-accounts-eks/iam-role-for-service-accounts-eks.yaml'
+      Parameters:
+        RoleName: 'karpenter-controller-${var.cluster_name}'
+        AttachKarpenterControllerPolicy: 'true'
+        ClusterID: !GetAtt EKS.ClusterID
+        SSMParameterARNs:
+          - 'arn:${AWS::Partition}:ssm:*:*:parameter/aws/service/*'
+        NodeIAMRoleARNs:
+          - !GetAtt EKS.EKSManagedNodeGroups.worker-ci.IamInstanceProfileArn
+        OIDCProviders:
+          ex:
+            ProviderARN: !GetAtt EKS.OIDCProviderARN
+            NamespaceServiceAccounts:
+              - 'karpenter:karpenter'
+
+  KarpenterInstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      InstanceProfileName: 'KarpenterNodeInstanceProfile-${var.cluster_name}'
+      Roles:
+        - !GetAtt EKS.EKSManagedNodeGroups.worker-ci.IamInstanceProfileName
+
+  KarpenterHelmRelease:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: 'https://aws-quickstart.s3.amazonaws.com/quickstart-hashicorp-terraform-3/resources/helm_release.yaml'
+      Parameters:
+        Namespace: 'karpenter'
+        CreateNamespace: 'true'
+        Name: 'karpenter'
+        Repository: 'https://charts.karpenter.sh'
+        Chart: 'karpenter'
+        Version: '0.8.2'
+        Set:
+          - Name: 'serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn'
+            Value: !GetAtt KarpenterIRSA.Outputs.IAMRoleARN
+          - Name: 'clusterName'
+            Value: !GetAtt EKS.ClusterID
+          - Name: 'clusterEndpoint'
+            Value: !GetAtt EKS.ClusterEndpoint
+          - Name: 'aws.defaultInstanceProfile'
+            Value: !GetAtt KarpenterInstanceProfile.Arn
+      DependsOn:
+        - KarpenterIRSA
+        - EKS
+
+  KarpenterProvisioner:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: 'https://aws-quickstart.s3.amazonaws.com/quickstart-hashicorp-terraform-3/resources/kubectl_manifest.yaml'
+      Parameters:
+        YAML: |
+          apiVersion: karpenter.sh/v1alpha5
+          kind: Provisioner
+          metadata:
+            name: default
+          spec:
+            requirements:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values: ["spot"]
+            limits:
+              resources:
+                cpu: 1000
+            provider:
+              subnetSelector:
+                karpenter.sh/discovery: !Ref 'AWS::StackName'
+              securityGroupSelector:
+                karpenter.sh/discovery: !Ref 'AWS::StackName'
+              tags:
+                karpenter.sh/discovery: !Ref 'AWS::StackName'
+            ttlSecondsAfterEmpty: 30
+      DependsOn:
+        - KarpenterHelmRelease
