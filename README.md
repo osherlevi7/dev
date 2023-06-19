@@ -2,7 +2,7 @@ w
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/osherlevi7/dev">
+  <a href="https://main.dc6bx2cr0xgnc.amplifyapp.com">
     <img src="assets/main.png" alt="Logo" width="80" height="80">
   </a>
 
