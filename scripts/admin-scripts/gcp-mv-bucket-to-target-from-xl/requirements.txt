@@ -1,0 +1,5 @@
+google-cloud-storage
+openpyxl
+tqdm
+pandas
+boto3

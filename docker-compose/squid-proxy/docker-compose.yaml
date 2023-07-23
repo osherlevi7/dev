@@ -1,0 +1,19 @@
+version: "3"
+services:
+   squid:
+     image: sameersbn/squid
+     environment:
+      - CN=squid.local
+      - O=squid
+      - OU=squid
+      - C=US
+     ports:
+       - "443:3128"
+       - "3128:3128"
+       - "4128:4128"
+     volumes:
+       - ./cache:/var/spool/squid
+       - ./log:/var/log/squid
+       - ./conf:/etc/squid
+#      - ./cert:/etc/squid-cert
+     restart: always
