@@ -1,0 +1,105 @@
+v0.14.1:
+- (Bug/Major) Fixed regression introduced in v0.14.0 that altered logic of '--stopped-instance' and '--do-not-require-stopped-instance' combination (v.14.0 release has been removed to prevent download).
+
+v0.14.0:
+- (Improvment/Minor) Even if ec2-spot-converter primary intent is not to convert IaaC created ressources (with CloudFormaiton for instance), some users expressed this need. To enable this side use-case, during a conversion, all tags prefixed with the reserved namespace 'aws:' are renamed with '_aws:'.
+- (Improvment/Major) Added an explicit comment in README.md about the transient tag 'ec2-spot-converter:job-id' that existing Landing-Zone automatic remediation mecanisms should consider to not alter ressources (EC2, ENI, EBS volumes) under conversion. (Note: 'ec2-spot-converter:job-id' tag exists since the very firt version of the tool).
+
+v0.13.5:
+- (Bug/Major) Fixed some rare failure cases when EC2 create_image API take few seconds to return the AMI Id.
+
+
+v0.13.4:
+- (Bug/Major) Fixed EBS volume leakage when Root volume has DeleteOnTermination=false.
+
+v0.13.3:
+- (Bug/Minor) Fixed handling of InstanceInitiatedShutdownBehavior EC2 launch parameter.
+
+v0.13.2:
+- (Bug/Major) It is now possible to convert instances created without SSH key pair specified.
+
+v0.13.1:
+- (Bug/Major) CPU options is only supported on x86_64 instance types (Especially, Graviton based instances are not supported).
+
+v0.13.0:
+- (Improvment/Minor) Added sanity check to forbid launching 'ec2-spot-converter' tool on the converted instance.
+
+v0.12.1:
+- (Bug/Minor) Fixed an exception while attempting to display instance diff when converted instance has no tags.
+- (Improvment/Minor) Set the timeout for AMI generation to 4 hours as, in rare circumstances, creating an Image can take a very long time at EC2 side...
+
+v0.12.0:
+- (Bug/Major) Fixed error when tags are not set on volumes.
+
+v0.11.0:
+- (Improvment/Major) Volume tags are now preserved during migration.
+- (Improvment/Minor) In order to reduce bad command line substitutions, --check-targetgroups option does not require anymore the '*' character to express all target groups into the account. Simply provide --check-targetgroups without any parameter instead.
+
+v0.10.0:
+- (Improvment/Major) Added --update-cw-alarms parameter to specify that CloudWatchs alarm referring the converted Instance Id need to be updated.
+	WARNING: The IAM policy document has been updated to allow CloudWatch API needed by the feature.
+
+v0.9.0:
+- (Improvment/Major) Added support for ELB target group registration preservation (Thanks @regevbr for this nice contribution!). 
+	WARNING: The IAM policy document has been updated to allow ELBv2 API needed by the feature.
+- (Bug/Minor) Fixed inability to cancel a Spot resquest in 'open' state.
+- (Bug/Minor) Fixed broken debug mode.
+
+v0.8.2:
+- (Bug/Minor) Give user guidance when AWS region can not be guessed. (GitHub Issue #2]
+
+v0.8.1:
+- (Bug/Major) Conversion was failing if the conversion target type was set to 't2' instance family ('CPUOptions' handling has to be different in this case).
+
+v0.8.0:
+- (Improvment/Major) Updated recommended IAM policy to allow kms:DescribeKey.
+- (Improvment/Major) Added option --volume-kms-key-id to set the KMS Key Id to use to encrypt volumes during conversion.
+- (Improvment/Minor) Keep records of command line arguments at each step and warn the user when they differ.
+
+v0.7.1: 
+- (Bug/Major) Fixed incorrect handling of encrypted volumes to place in the backup AMI.
+
+v0.7.0:
+- (Improvment/Major) Added policy.json file containing the recommended IAM policy to use.
+- (Improvment/Minor) Added option --do-not-pause-on-major-warnings to avoid long pause on major warning.
+- (Improvment/Minor) Removed step 'get_volume_details' and merged it with 'discover_instance'.
+- (Improvment/Minor) Handle Ctrl-C tool interruption smartly.
+
+v0.6.2:
+- (Bug/Major) Multi-attach volumes handling: Exception could have thrown when more than one multi-attach volume were present.
+
+v0.6.1:
+- (Improvment/Minor) When replaying the 'create_ami' step, no more ask from user remediation: Do it automatically.
+
+v0.6.0:
+- (Improvment/Major) Added more operational safety sanity checks for increased relisiency to interrupted operations in step 'create_new_instance'.
+
+v0.5.1:
+- (Bug/Major) Ensure that the Root device is always part of the generated AMI
+- (Bug/Major) Ensure that all volume types are correctly handled (especially 'st1', 'sc1', and 'standard' that were broken)
+- (Bug/Minor) Ensure that BlockDeviceMappings are sorted in the same way in instance details (review conversion result window)
+
+v0.5.0:
+- (Improvment/Minor) Added more sanity checks about --cpu-options user input.
+- (Improvment/Minor) Added --ignore-hibernation-options to not propagate hibernation options if needed by user.
+- (Bug/Minor) Do not inherit original instance Spot price when --instance-type is specified but use On-Demand price instead.
+
+v0.4.2:
+- (Bug/Major) Handling of --max-spot-price was broken. Fixed.
+- Deprecated v0.4.1 as unuseable.
+
+v0.4.0:
+- (Improvment/Minor) Added EC2 Termination protection API sanity check: Do not start a conversion if instance termination protection is set.
+- (Improvment/Minor) Added --ignore-userdata to avoid copy of userdata in the converted instance.
+- (Improvment/Minor) Ensure that the original instance is in 'terminated' state before to create the converted one.
+
+v0.3.0:
+- (Improvment/Major) Added paranoid sanity checks about Spot Requests status. Added the ability to fix 'IncorrectSpotRequestState Exceptions'.
+- (Improvment/Minor) Added a --force option to force a conversion start even if the tool suggests it is not needed (ex: Spot-to-Spot or On-demand to On-Demand...).
+- (Bug/Major) Rarely, the AMI EC2 service can return a status 'failed'. The tool manage this but the user will have to restart it to retry.
+
+v0.2.0:
+- (Improvment/Major) Added support for Multi-Attached EBS volumes.
+
+v0.1.0:
+- Initial release.
