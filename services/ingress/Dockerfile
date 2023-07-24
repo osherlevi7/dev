@@ -1,4 +1,4 @@
-FROM nginx:1.21.6
+FROM nginx:mainline
 # Remove default nginx.conf file
 RUN rm /etc/nginx/conf.d/default.conf
 # Copy nginx.conf file from local directory to the container
