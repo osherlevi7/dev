@@ -1,4 +1,4 @@
-FROM python:3.8.13-slim
+FROM python:3.12.0b3-slim
 
 COPY  migrate_db.py /usr/local/bin/migrate_db.py
 COPY  requirements.txt /tmp/requirements.txt
