@@ -1,4 +1,4 @@
-w
+
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -55,5 +55,9 @@ w
 | :---------: | :---------: | :---------: | :---------: | :---------: |
 | Yes | 11+ | Yes | Yes | Yes |
 
-
+<br />
+<div align="center">
+  <a href="assets/">
+    <img src="assets/cloud_services_providers.jpeg">
+  </a>
 
