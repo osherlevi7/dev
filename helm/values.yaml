@@ -1,5 +1,5 @@
 # Global values for helm, overriden in each services values.yaml.
-
+########################## GLOBAL ###############################################
 global:
   environment: &ENV "production"
   namespace: &NS "production"
@@ -9,6 +9,33 @@ global:
   imagePullSecrets:
     - name: "sa-key-main"
   image_tag_override: "main-latest"
+
+############################# GO PHISH  #########################################
+  gophish:
+    enable : true
+    
+
+
+############################# PROM-TAIL ##########################################
+  # promtail:
+  #   namespace: *NS
+  #   serviceAccount:
+  #     name: *NS
+  #   rbac:
+  #     name: *NS
+  # tolerations: []
+  # nodeSelector:
+  #   iam.gke.io/gke-metadata-server-enabled: "true"
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: team
+  #           operator: In
+  #           values:
+  #             - engineers
+############################## INGRESS ##########################################  
   ingress:
     enabled: true
     annotations:
@@ -28,21 +55,3 @@ global:
               operator: In
               values:
                 - engineers
-  promtail:
-    namespace: *NS
-    serviceAccount:
-      name: *NS
-    rbac:
-      name: *NS
-  tolerations: []
-  nodeSelector:
-    iam.gke.io/gke-metadata-server-enabled: "true"
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: team
-            operator: In
-            values:
-              - engineers

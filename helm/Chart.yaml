@@ -12,5 +12,5 @@ dependencies:
     version: "1.0.0"
   - name: "promtail"
     version: "1.0.0"
-  - nsame: "robot-shop"
+  - name: "robot-shop"
     version: "1.0.0"

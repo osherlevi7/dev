@@ -1,0 +1,7 @@
+google-cloud-storage
+pandas
+openpyxl
+tqdm
+tenacity
+rich
+openpyxl

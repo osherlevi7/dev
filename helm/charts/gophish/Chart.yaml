@@ -1,0 +1,4 @@
+apiVersion: v1
+name: gophish
+version: 1.0.0
+description: Go Phishing application

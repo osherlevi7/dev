@@ -1,0 +1,65 @@
+version: "3"
+
+services:
+  gophish:
+    build:
+      context: ./etc/gophish/
+    container_name: gophish-prod
+    restart: unless-stopped
+    ports:
+      - "3333:3333"
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - default
+  nginx:
+    build:
+      context: ./etc/nginx/
+    container_name: gophish-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - default
+  mysql:
+    image: mysql:latest
+    container_name: gophish-db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./etc/mysql/:/docker-entrypoint-initdb.d/
+      - ./etc/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - default
+    env_file:
+      - .env
+  postfix:
+    build:
+      context: ./etc/postfix/
+    container_name: gophish-postfix
+    restart: unless-stopped
+    ports:
+      - "25:25"
+    networks:
+      - default
+    env_file:
+      - .env
+  adminer:
+    image: adminer
+    container_name: gophish-adminer
+    restart: unless-stopped
+    ports:
+      - 9000:8080
+    links:
+      - mysql
+
+volumes:
+  mysql_data:
+
+networks:
+  default:
+

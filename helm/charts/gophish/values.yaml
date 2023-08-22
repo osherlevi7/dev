@@ -1,0 +1,66 @@
+nameOverride: "gophish"
+fullnameOverride: ""
+replicaCount: 1
+podAnnotations: {}
+podSecurityContext: {}
+resources: {}
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+ingress: 
+  enable: true
+  metadata:
+  name: gophish
+  namespace: gophish
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - gophish.domain.com
+    secretName: gophish-tls
+  rules:
+  - host: gophish.domain.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: gophish
+            port:
+              number: 80
+image:
+  repository: gophish/gophish
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+configMap:
+  enabled: true
+  data: 
+    config.json: |
+      {
+        "admin_server": {
+          "listen_url": "0.0.0.0:3333",
+          "use_tls": true,
+          "cert_path": "/etc/tls/tls.crt",
+          "key_path": "/etc/tls/tls.key"
+        },
+        "phish_server": {
+          "listen_url": "0.0.0.0:80",
+          "use_tls": false,
+          "cert_path": "/etc/tls/tls.crt",
+          "key_path": "/etc/tls/tls.key"
+        },
+        "db_name": "sqlite3",
+        "db_path": "gophish.db",
+        "migrations_prefix": "db/db_"
+      }
+      # ,
+      # "smtp": {
+      #     "host": "localhost:25",
+      #     "user": "",
+      #     "pass": ""
+      #   }

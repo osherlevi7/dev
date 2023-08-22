@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gophish.fullname" . }}
+  namespace: gophish
+  labels:
+    {{- include "gophish.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 3333
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "gophish.selectorLabels" . | nindent 4 }}
