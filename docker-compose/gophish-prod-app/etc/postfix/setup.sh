@@ -45,6 +45,8 @@ if [ ! -z "$MTP_RELAY" -a ! -z "$MTP_PORT" -a ! -z "$MTP_USER" -a ! -z "$MTP_PAS
     setup_conf_and_secret
 else
     postconf -e 'mynetworks = 127.0.0.1/32 192.168.0.0/16 172.16.0.0/12 172.17.0.0/16 10.0.0.0/8'
+    postconf -e 'inet_protocols = ipv4'
+
 fi
 
 if [ $(grep -c "^#header_checks" /etc/postfix/main.cf) -eq 1 ]; then
