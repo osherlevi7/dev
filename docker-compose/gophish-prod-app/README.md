@@ -1,9 +1,10 @@
 # GoPhishing Campaign 
 
-    > gophish application using golang
-    > mySQL db for using the data from the compaign
-    > nginx webapp proxy 
-    > postfix email transfer agent
+    > gophish application using golang - 3333 8080
+    > mySQL db for using the data from the campaign - 3306
+    > nginx webapp proxy - 80 443
+    > postfix email transfer agent - 25
+    > adminer for the admin server management - 9000
 
 
 
@@ -42,6 +43,11 @@ MTP_PASS= <MTP PASS>
 
 # **Notice**
 
-SSL configuration are built in on the dockerfile on the nginx dockerfile once we build the app.  
+SSL certificate is manged by Certbot package, run it on the container after exec interactively session is created, copy this certificates to the local nginx directory and rebuild the app. 
 
-> Change the command to run with you domain.
+```bash
+    certbot --nginx
+```
+
+
+
