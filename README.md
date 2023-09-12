@@ -1,3 +1,4 @@
+[![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/rqpt.svg)](https://uptime.betterstack.com/?utm_source=status_badge)
 
 <!-- PROJECT LOGO -->
 <br />
