@@ -119,5 +119,7 @@ jobs:
     - name: Snyk Auth using API
       run: snyk auth ${{ secrets.SNYK_TOKEN }} -d
 
-    - name: Snyk Test
-      run: snyk test services/
+    - name: file-converter |  Snyk Test 
+      run: snyk test services/file-converter
+    - name: streamlit-dashboard |  Snyk Test 
+      run: snyk test services/streamlit-dashboard/streamlit
