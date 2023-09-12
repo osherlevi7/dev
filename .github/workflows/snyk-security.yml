@@ -106,6 +106,10 @@ jobs:
     - name: Set up Snyk CLI to check for security issues
       uses: snyk/actions/setup@299cde98a08ff8b1c2bfde1e5a067bce67a6d2b8
 
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'  # Change this to your version
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -114,12 +118,18 @@ jobs:
 
     # If Snyk CLI is not installed on the runner, you can install it as follows:
     - name: Install Snyk CLI
-      run: npm install -g snyk
+      run: npm install -g snyk@latest
 
     - name: Snyk Auth using API
       run: snyk auth ${{ secrets.SNYK_TOKEN }} -d
 
+    - name: file-converter | pip install
+      run: pip install -r services/file-converter/requirements.txt
+    - name: file-converter | pipinstall
+      run: pip install -r services/streamlit-dashboard/streamlit/requirements.txt
+
     - name: file-converter |  Snyk Test 
       run: snyk test services/file-converter
+
     - name: streamlit-dashboard |  Snyk Test 
       run: snyk test services/streamlit-dashboard/streamlit
