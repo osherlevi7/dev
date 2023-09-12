@@ -120,4 +120,4 @@ jobs:
       run: snyk auth ${{ secrets.SNYK_TOKEN }} -d
 
     - name: Snyk Test
-      run: snyk test
+      run: snyk test services/
