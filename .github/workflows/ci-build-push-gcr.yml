@@ -12,10 +12,10 @@ on:
      branches:
        - docker
     
-    branches-ignore:
-      - main
-      - dev
-      - feature/**
+    # branches-ignore:
+    #   - main
+    #   - dev
+    #   - feature/**
 
 concurrency: 
   group: 'ci-${{ github.ref }}'
