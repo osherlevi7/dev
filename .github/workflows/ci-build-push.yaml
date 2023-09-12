@@ -65,16 +65,16 @@ jobs:
     name: IF CHANGED | Run Checkov terraform SCA
     needs: [affected-services]
     if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
-    uses: osher.levi7/dev/.github/workflows/checkov-terraform.yaml@main
+    uses: ./.github/workflows/checkov-terraform.yaml
     with:
       services: ${{needs.affected-services.outputs.affected_services_output}}
 
-  call-infracost:
-        name: JOB | Run infracost terraform 
-        # needs: [affected-services]
-        uses: osher.levi7/dev/.github/workflows/infracost.yaml@main
-        with:
-          terraform_env: terraform/gcp/environments/infra-secure
+  # call-infracost:
+  #       name: JOB | Run infracost terraform 
+  #       # needs: [affected-services]
+  #       uses: osher.levi7/dev/.github/workflows/infracost.yaml@main
+  #       with:
+  #         terraform_env: terraform/gcp/environments/infra-secure
     
 
   # setup-build-push:
