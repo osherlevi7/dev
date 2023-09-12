@@ -130,7 +130,7 @@ jobs:
       run: python3 -m pip install -r services/streamlit-dashboard/streamlit/requirements.txt
 
     - name: file-converter |  Snyk Test 
-      run: snyk test services/file-converter
+      run: snyk test services/file-converter && snyk fix
 
     - name: streamlit-dashboard |  Snyk Test 
-      run: snyk test services/streamlit-dashboard/streamlit
+      run: snyk test services/streamlit-dashboard/streamlit && snyk fix
