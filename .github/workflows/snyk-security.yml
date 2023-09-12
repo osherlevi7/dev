@@ -52,7 +52,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Snyk Auth using API
-        run: snyk auth ${{ env.SNYK_TOKEN }}
+        run: snyk auth ${{ SNYK_TOKEN }}
         # Runs Snyk Code (SAST) analysis and uploads result into GitHub.
         # Use || true to not fail the pipeline
       - name: Snyk Code test
@@ -62,7 +62,7 @@ jobs:
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         env:
-          SNYK_TOKEN: ${{ env.SNYK_TOKEN }} # Use the secret you stored in your repository
+          SNYK_TOKEN: ${{ SNYK_TOKEN }} # Use the secret you stored in your repository
         with:
           args: --all-projects
 
