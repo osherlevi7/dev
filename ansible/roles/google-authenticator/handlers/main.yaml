@@ -1,0 +1,6 @@
+---
+# handlers file for google_authenticator
+- name: Restart ssh
+  service:
+    name: ssh
+    state: restarted

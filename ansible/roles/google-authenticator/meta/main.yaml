@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Osher Levi
+  description: Role to install and configure google_authenticator
+  company: Google
+  license: license (MIT, Apache, etc.)
+  min_ansible_version: 2.4
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - google_authenticator
+    - security
+    - 2FA

@@ -1,0 +1,72 @@
+---
+- name: Update apt-get repo and cache
+  apt: update_cache=yes cache_valid_time=3600
+  when: ansible_os_family == "Debian"
+
+- name: Install google_authenticator
+  apt: 
+    name: "{{ package_name }}" 
+    state: latest
+  when: ansible_os_family == "Debian"
+# Using "ansible_fqdn" the host name that we targeting as host  
+# [authentication tokens to be time-based (y/n): y]
+# ["/home/user/.google_authenticator" file (y/n): y]
+# [restricts you to one login about every 30s, but it increases your chances to notice or even prevent man-in-the-middle attacks (y/n): n]
+# [allow an extra token before and after the current time. If you experience problems with poor time synchronization, you can increase the window from its default size of 1:30min to about 4min. Do you want to do so (y/n): y]
+# [limits attackers to no more than 3 login attempts every 30s. Do you want to enable rate-limiting (y/n): y]
+- name: Generate google_authenticator configuration
+  shell: echo "y\ny\nn\ny\ny" | google-authenticator -t -d -r3 -R30 -f -l "{{ ansible_fqdn }}" -s /home/{{ ansible_user }}/.google_authenticator
+  register: ga_code
+  changed_when: ga_code.rc == 0
+############################ LastPass ######################################
+- name: Install LastPass CLI 
+  apt:
+    name: lastpass-cli
+    state: present
+- name: Save recovery codes to LastPass
+  shell: |
+    echo -e 'Username: recovery codes\nPassword: {{ ga_code.stdout }}\nURL: http://your-url.com' | lpass add --non-interactive "{{ ansible_fqdn }} recovery codes"
+  no_log: true
+
+- name: Update /etc/pam.d/common-auth
+  lineinfile:
+    path: /etc/pam.d/common-auth
+    insertbefore: BOF
+    line: "{{ item }}"
+  loop:
+    - 'auth required pam_google_authenticator.so nullok'
+    - 'auth required pam_permit.so'
+
+- name: Update /etc/ssh/sshd_config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^ChallengeResponseAuthentication no'
+    line: 'ChallengeResponseAuthentication yes'
+  notify: Restart ssh
+
+###################### AWS Secrets Manager #############################
+# - name: Install boto3
+#   pip: 
+#     name: boto3
+#     state: latest
+# - name: Save google_authenticator recovery codes to AWS Secrets Manager
+#   shell: |
+#     python -c "
+#     import boto3
+#     client = boto3.client('secretsmanager')
+#     response = client.create_secret(
+#         Name='{{ ansible_fqdn }}',
+#         SecretString='{{ ga_code.stdout_lines }}'
+#     )
+#     "
+########################## 1Password ######################################
+# - name: Save recovery codes to 1Password
+#   shell: |
+#     echo '{{ ga_code.stdout }}' | op create item Login --title="{{ ansible_fqdn }} recovery codes" --username="recovery codes" --password='{{ ga_code.stdout }}' --vault='Recovery Codes'
+#   no_log: true
+    ## op create item Login: This command creates a new item of type Login.
+    ## --title="{{ ansible_fqdn }} recovery codes": The title of the item is set to the host's FQDN followed by "recovery codes".
+    ## --username="recovery codes": The username is set to "recovery codes".
+    ## --password='{{ ga_code.stdout }}': The password is set to the recovery codes.
+    ## --vault='Recovery Codes': The item is saved in the vault named "Recovery Codes".
+    ## https://support.1password.com/command-line/
