@@ -16,7 +16,21 @@ defaults:
 
     
 jobs:
+  Job-Details:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Job-Details
+        run: |
+          echo "====================================================================="
+          echo "====================================================================="
+          echo "Workflow name:     [${GITHUB_WORKFLOW}]"
+          echo "Workspace:         [${GITHUB_WORKSPACE}]"
+          echo "Event:             [${GITHUB_EVENT_NAME}]"
+          echo "Branch:            [${GITHUB_REF}]"
+          echo "Initiate by:       [${{ github.triggering_actor }}]" 
+  
   checkov:
+    needs: Job-Details
     runs-on: ubuntu-latest
     steps:
       - name: Step 1 | Checkout the code
