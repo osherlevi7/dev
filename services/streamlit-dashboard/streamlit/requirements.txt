@@ -29,7 +29,7 @@ MarkupSafe==2.1.1
 numpy==1.23.5
 packaging==21.3
 pandas==1.5.2
-Pillow==9.3.0
+Pillow==10.0.1
 plotly==5.11.0
 proto-plus==1.22.1
 protobuf==3.20.3
