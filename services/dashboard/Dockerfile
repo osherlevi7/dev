@@ -39,6 +39,6 @@ COPY --from=base --chown=appuser:appgroup /app/package.json /app/package.json
 COPY --from=build --chown=appuser:appgroup /app/entrypoint.sh /app/
 COPY --from=build --chown=appuser:appgroup /app/ /app/
 # Set environment variables
-EXPOSE 80
+EXPOSE 80 5000
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["serve"]
