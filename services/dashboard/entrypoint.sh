@@ -7,8 +7,8 @@ export FOO="Baz"
 if [ "${1}" == "serve" ]; then
     # This is the primary target
     shift # consume the 1st argument
-    cd src
-    npm install --force && npm run build && npm start
+    # npm install --force && 
+    npm start
 else
     # An unknown command (debugging the container?): Forward as is
     exec ${@}
