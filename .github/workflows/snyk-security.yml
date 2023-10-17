@@ -13,10 +13,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Snyk CLI to check for security issues
-      uses: snyk/actions/setup@299cde98a08ff8b1c2bfde1e5a067bce67a6d2b8
+      uses: snyk/actions/setup@39091e69b560da335383b404e50d65b408f4f812
 
     - name: Set up Python
       uses: actions/setup-python@v4
