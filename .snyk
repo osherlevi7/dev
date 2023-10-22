@@ -1,11 +1,10 @@
-exclude:
-    global:
-        - services/ingress/Dockerfile
-        - docker-compose/gophish-prod-app/etc/nginx/Dockerfile
-        - services/dashboard/Dockerfile
-        - services/gcsfuse/Dockerfile
-        - scripts/gcp-containers/gcsfuse/Dockerfile
-        - services/streamlit-dashboard/Dockerfile
-        - docker-compose/migrate_db/Dockerfile
-        - docker-compose/gophish-prod-app/etc/postfix/Dockerfile
-        - services/watchtower/Dockerfile
+ignore:
+    - 'services/ingress/Dockerfile'
+    - 'docker-compose/gophish-prod-app/etc/nginx/Dockerfile'
+    - 'services/dashboard/Dockerfile'
+    - 'services/gcsfuse/Dockerfile'
+    - 'scripts/gcp-containers/gcsfuse/Dockerfile'
+    - 'services/streamlit-dashboard/Dockerfile'
+    - 'docker-compose/migrate_db/Dockerfile'
+    - 'docker-compose/gophish-prod-app/etc/postfix/Dockerfile'
+    - 'services/watchtower/Dockerfile'
