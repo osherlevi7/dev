@@ -1,1 +1,3 @@
-services/ingress/Dockerfile
+exclude:
+    global:
+        - services/ingress/Dockerfile
