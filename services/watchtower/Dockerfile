@@ -2,7 +2,7 @@ FROM containrrr/watchtower:latest as parent
 #replace the image sha with the real one.
 FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine@sha256:<sha256sum> as google 
 
-FROM python:3.10.2-alpine3.15 as served
+FROM python:3.12.0a1-alpine3.15 as served
 
 LABEL "com.centurylinklabs.watchtower"="true"
 
