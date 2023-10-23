@@ -20,3 +20,16 @@ npm install @mui/material @emotion/react @emotion/styled @mui/x-data-grid @mui/i
 ``` 
 
 ### Remove test file
+
+
+
+
+
+
+
+# commands 
+
+```sh 
+    docker build -t dashboard .
+    docker run -d -p 5000:5000 dashboard
+```
