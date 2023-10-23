@@ -10,7 +10,7 @@ codiga.yml
 __pycache__
 *.mypy*
 *.swp
-*.log
+*.log 
 .venv
 .DS_Store
 node_modules/
@@ -19,7 +19,7 @@ p-*.sh
 **/.infracost**
 terraform.tfstate**
 transaction.yaml
-**.json
+# **.json
 **venv/
 **.vscode/
 .DS_Store
