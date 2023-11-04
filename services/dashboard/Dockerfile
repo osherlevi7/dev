@@ -43,5 +43,3 @@ COPY --from=build --chown=appuser:appgroup /app/ /app/
 EXPOSE 80 5000
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["serve"]
-
-

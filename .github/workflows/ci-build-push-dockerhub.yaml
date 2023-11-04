@@ -91,7 +91,7 @@ jobs:
   setup-build-push:
     name: IF SERVICES CHANGED |  Setup, Build, and Push to registry
     needs: [affected-services]
-    if: contains(needs.affected-services.outputs.affected_services_output, 'services')
+    if: needs.affected-services.outputs.affected_services_output
     runs-on: ubuntu-latest
     steps:
       - name: CHECKOUT | Bring the new code
