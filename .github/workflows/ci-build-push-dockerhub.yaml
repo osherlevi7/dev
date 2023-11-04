@@ -30,38 +30,48 @@ jobs:
     name: Fetch changed files
     timeout-minutes: 1
     steps:
-      - uses: actions/checkout@v4
+      
+      - name: INFO | Debugging info
+        run: |
+        echo '${{ github.event.head_commit.message }}'
+        echo '${{ github.base_ref }}'
+        echo '${{ github.ref }}'
+      
+      - name: CHECKOUT | Bring the new code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
-      - name: Info | Debugging info
-        run: |
-          echo '${{ github.event.head_commit.message }}'
-          echo '${{ github.base_ref }}'
-          echo '${{ github.ref }}'
-      
-      - name: CHECKOUT | Get changed files
+
+      - name: DEBUG | Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v40.1.0
+      - name: DEBUG | print the changed files
+        run: |
+          echo '${{ changed-files }}'
 
       - name: EFECTED-SERVICES | List all changed files & Set affected services
         id: set-services
         run: |
-          affected_services=()
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo "$file was changed"
-          # if [[ "$file" == ** ]] ; then
-          #   affected_services+=("Some Files has been changed !!!! ") ; fi
-          if [[ "$file" == terraform/** ]]; then
-            affected_services+=("terraform") ; fi
-          if [[ "$file" == services/** ]]; then
-            affected_services+=("services") ; fi
-          done
-          without_dups=$(echo ${affected_services[@]} | xargs -n1 | sort -u | xargs)
-          parsed=$(IFS='|';echo "${without_dups[*]// /|}";IFS=$' \t\n') && echo $parsed
-          echo "affected_services_output=$parsed" >> $GITHUB_OUTPUT
-    outputs:
-      affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
+        # Initialize an array to store affected services
+        affected_services=()
+        # Loop through the changed files
+        for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+          echo "$file was changed"
+          # Check if the file is inside the "services" folder
+          if [[ "$file" == services/* ]]; then
+            # Extract the service name from the file path
+            service_name=$(echo "$file" | cut -d'/' -f2)
+            affected_services+=("$service_name")
+          fi
+        done
+        # Deduplicate the affected services
+        affected_services=($(echo "${affected_services[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+        # Combine the affected services into a single string
+        parsed=$(IFS='|'; echo "${affected_services[*]}"; IFS=$' \t\n')
+        # Output the result
+        echo "affected_services_output=$parsed" >> $GITHUB_OUTPUT
+      outputs:
+        affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
     
   call-checkov:
     name: IF TERRAFORM CHANGED | Run Checkov terraform SCA
