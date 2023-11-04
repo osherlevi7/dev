@@ -47,7 +47,7 @@ jobs:
         uses: tj-actions/changed-files@v40.1.0
       - name: DEBUG | print the changed files
         run: |
-          echo '${{ changed-files }}'
+          echo '${{ id.changed-files }}'
 
       - name: EFECTED-SERVICES | List all changed files & Set affected services
         id: set-services
@@ -70,8 +70,8 @@ jobs:
           parsed=$(IFS='|'; echo "${affected_services[*]}"; IFS=$' \t\n')
           # Output the result
           echo "affected_services_output=$parsed" >> $GITHUB_OUTPUT
-        outputs:
-          affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
+      outputs:
+        affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
       
   call-checkov:
     name: IF TERRAFORM CHANGED | Run Checkov terraform SCA
