@@ -33,11 +33,11 @@ for service in ${parsed_services[*]}; do
     msg $service "${NC}${GREEN}${action}ing"
     #if [[ $service == "app-fe" ]]; then api="/app-backend";calls_fe="/calls-frontend";calls_be="/calls-backend"; fi
     if [[ $action == "build" ]]; then
-        docker build --build-arg env=$env -t $service:$image-$tag -t $service:$image-latest $path || msg $service "${NC}${RED}Failed" | exit 1
+        docker build --build-arg env=$env -t osherlevi7/$service:$image-$tag -t osherlevi7/$service:$image-latest $path || msg $service "${NC}${RED}Failed" | exit 1
             #--build-arg envfile=".env.$env" \
     fi
 
     if [[ $action == "push" ]]; then
-        docker push $service --all-tags
+        docker push osherlevi7/$service --all-tags
     fi
 done
