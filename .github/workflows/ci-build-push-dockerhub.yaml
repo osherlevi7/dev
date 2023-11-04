@@ -1,4 +1,4 @@
-name: JOB | Run continuous integration
+name: CI | Run continuous integration to DockerHub
 on:
   # pull_request:
   #   types:
@@ -42,7 +42,7 @@ jobs:
       
       - name: Step 1 | Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v39
+        uses: tj-actions/changed-files@v40.1.0
 
       - name: Step 2 | List all changed files & Set affected services
         id: set-services
@@ -54,6 +54,8 @@ jobs:
             affected_services+=("Some Files has been changed !!!! ") ; fi
           if [[ "$file" == terraform/** ]]; then
             affected_services+=("terraform") ; fi
+          f [[ "$file" == services/** ]]; then
+            affected_services+=("services") ; fi
           done
           without_dups=$(echo ${affected_services[@]} | xargs -n1 | sort -u | xargs)
           parsed=$(IFS='|';echo "${without_dups[*]// /|}";IFS=$' \t\n') && echo $parsed
@@ -62,7 +64,7 @@ jobs:
       affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
     
   call-checkov:
-    name: IF CHANGED | Run Checkov terraform SCA
+    name: IF TERRAFORM CHANGED | Run Checkov terraform SCA
     needs: [affected-services]
     if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
     uses: ./.github/workflows/checkov-terraform.yaml
@@ -76,43 +78,33 @@ jobs:
   #       with:
   #         terraform_env: terraform/gcp/environments/infra-secure
     
+  setup-build-push:
+    name: IF SERVICES CHANGED |  Setup, Build, and Push to registry
+    needs: [affected-services]
+    if: contains(needs.affected-services.outputs.affected_services_output, 'services')
+    runs-on: ubuntu-latest
+    steps:
+      - name: CHECKOUT | Bring the new code
+        uses: actions/checkout@v4.1.1
 
-  # setup-build-push:
-  #   needs: [affected-services]
-  #   if: needs.affected-services.outputs.affected_services_output
-  #   name: JOB |  Setup, Build, and Push to registry
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Step 1 | Bring the new code
-  #       uses: actions/checkout@v4
+      # - name: BUILD-X | Set up Docker Buildx  # need to enable and save the cache
+      #   uses: docker/setup-buildx-action@v2.2.0
 
-  #     # - name: Step 2 | Set up Docker Buildx  # need to enable and save the cache
-  #     #   uses: docker/setup-buildx-action@v2.2.0
+      - name: DOCKER-HUB | login to Dockerhub
+        run: docker login -u osherlevi7 -p ${{ secrets.DOCKERHUB_TOKEN }}
 
-  #     - name: Step 3 | Authenticate to Google Cloud
-  #       id: 'auth'
-  #       uses: 'google-github-actions/auth@v0'
-  #       with:
-  #         credentials_json: '${{ secrets.GCR_SA_RW_KEY }}'
+      - name: BUILD |  Docker build service  
+        run: >
+          ./scripts/docker_build.sh 
+          --action build
+          --branch ${{ github.ref_name }}
+          --affected_services '"${{needs.affected-services.outputs.affected_services_output}}"'
 
-  #     - name: Step 4 | login to gcr
-  #       run: |
-  #         gcloud auth configure-docker -q
-
-  #     - name: Step 5 |  Docker build service  
-  #       run: >
-  #         ./scripts/docker_build.sh 
-  #         --action build
-  #         --branch ${{ github.ref_name }}
-  #         --project_id gcp-project
-  #         --affected_services '"${{needs.affected-services.outputs.affected_services_output}}"'
-
-  #     - name: Step 6 | Docker push service
-  #       run: >
-  #         ./scripts/docker_build.sh 
-  #         --action push
-  #         --branch ${{ github.ref_name }}
-  #         --project_id gcp-project
-  #         --affected_services '"${{needs.affected-services.outputs.affected_services_output}}"'
+      - name: PUSH | Docker push service
+        run: >
+          ./scripts/docker_build.sh 
+          --action push
+          --branch ${{ github.ref_name }}
+          --affected_services '"${{needs.affected-services.outputs.affected_services_output}}"'
 
 

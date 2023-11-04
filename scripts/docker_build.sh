@@ -9,7 +9,7 @@ scripts_folder="$(dirname ${BASH_SOURCE[0]})"
 # default args
 affected_services=
 action=
-project_id=
+# project_id=
 branch=
 image=$(git rev-parse --abbrev-ref HEAD | sed 's:.*/::')
 tag=$(git rev-parse --short HEAD)
@@ -38,11 +38,11 @@ for service in ${parsed_services[*]}; do
         docker build \
             #--build-arg envfile=".env.$env" \
             --build-arg env=$env \
-            -t gcr.io/$project_id/$service:$image-$tag \
-            -t gcr.io/$project_id/$service:$image-latest $path || msg $service "${NC}${RED}Failed" | exit 1
+            -t $service:$image-$tag \
+            -t $service:$image-latest $path || msg $service "${NC}${RED}Failed" | exit 1
     fi
 
     if [[ $action == "push" ]]; then
-        docker push gcr.io/$project_id/$service --all-tags
+        docker push $service --all-tags
     fi
 done
