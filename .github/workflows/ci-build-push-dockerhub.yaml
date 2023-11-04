@@ -83,8 +83,6 @@ jobs:
     needs: [affected-services]
     if: contains(needs.affected-services.outputs.affected_services_output, 'services')
     runs-on: ubuntu-latest
-    with:
-      services: ${{needs.affected-services.outputs.affected_services_output}}
     steps:
       - name: CHECKOUT | Bring the new code
         uses: actions/checkout@v4.1.1
