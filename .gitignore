@@ -42,7 +42,7 @@ postgres-data/
 **/build
 **/buildSrc
 **/.DS_Store
-**.json
+# **.json
 *$py.class
 **/.idea
 **/out/
