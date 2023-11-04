@@ -54,7 +54,7 @@ jobs:
             affected_services+=("Some Files has been changed !!!! ") ; fi
           if [[ "$file" == terraform/** ]]; then
             affected_services+=("terraform") ; fi
-          f [[ "$file" == services/** ]]; then
+          if [[ "$file" == services/** ]]; then
             affected_services+=("services") ; fi
           done
           without_dups=$(echo ${affected_services[@]} | xargs -n1 | sort -u | xargs)
