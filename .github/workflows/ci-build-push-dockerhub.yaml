@@ -52,27 +52,27 @@ jobs:
       - name: EFECTED-SERVICES | List all changed files & Set affected services
         id: set-services
         run: |
-        # Initialize an array to store affected services
-        affected_services=()
-        # Loop through the changed files
-        for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-          echo "$file was changed"
-          # Check if the file is inside the "services" folder
-          if [[ "$file" == services/* ]]; then
-            # Extract the service name from the file path
-            service_name=$(echo "$file" | cut -d'/' -f2)
-            affected_services+=("$service_name")
-          fi
-        done
-        # Deduplicate the affected services
-        affected_services=($(echo "${affected_services[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-        # Combine the affected services into a single string
-        parsed=$(IFS='|'; echo "${affected_services[*]}"; IFS=$' \t\n')
-        # Output the result
-        echo "affected_services_output=$parsed" >> $GITHUB_OUTPUT
-      outputs:
-        affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
-    
+          # Initialize an array to store affected services
+          affected_services=()
+          # Loop through the changed files
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file was changed"
+            # Check if the file is inside the "services" folder
+            if [[ "$file" == services/* ]]; then
+              # Extract the service name from the file path
+              service_name=$(echo "$file" | cut -d'/' -f2)
+              affected_services+=("$service_name")
+            fi
+          done
+          # Deduplicate the affected services
+          affected_services=($(echo "${affected_services[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+          # Combine the affected services into a single string
+          parsed=$(IFS='|'; echo "${affected_services[*]}"; IFS=$' \t\n')
+          # Output the result
+          echo "affected_services_output=$parsed" >> $GITHUB_OUTPUT
+        outputs:
+          affected_services_output: ${{ steps.set-services.outputs.affected_services_output }}
+      
   call-checkov:
     name: IF TERRAFORM CHANGED | Run Checkov terraform SCA
     needs: [affected-services]
