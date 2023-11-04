@@ -17,6 +17,7 @@ RUN chown -R appuser:appgroup /app
 USER appuser
 
 
+
 FROM node:20.8.0-slim AS build
 # Set non-root user and group
 RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
