@@ -44,3 +44,4 @@ EXPOSE 80 5000
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["serve"]
 
+
