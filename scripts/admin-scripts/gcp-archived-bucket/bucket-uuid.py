@@ -42,7 +42,7 @@ def check_and_write_uuids(file_name, uuids_in_bucket, uuids_in_file):
 # Main script
 
 # Specify your bucket name
-bucket_name = "scopio_serving_scans_prod_eur" 
+bucket_name = "scans" 
 # Specify the path where the UUIDs are stored in the bucket
 path = "/webroot/union/"
 

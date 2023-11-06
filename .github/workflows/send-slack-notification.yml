@@ -34,10 +34,6 @@ jobs:
       run:
         shell: bash
     steps:
-      ############################
-      # Print working variables
-      ############################
-
       - name: Create Metadata
         run: |
           echo "====================================================================="
@@ -53,10 +49,6 @@ jobs:
           echo "Branch:            [${GITHUB_REF}]"
           echo "Initiate by:       [${GITHUB_ACTOR}]"
           echo "AUTHOR_MESSAGES:   [${{ inputs.AUTHOR_MESSAGES }}]"
-      #########################################################################
-      # == Post in Slack                                                      #
-      #########################################################################
-
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -68,8 +60,9 @@ jobs:
           #MSG_MINIMAL: 'Actions URL'
           MSG_MINIMAL: true
           SLACK_ICON_EMOJI: ${{ inputs.ICON_EMOJI }}
-          SLACK_FOOTER: "Powered By OsherLeviDev"
+          SLACK_FOOTER: "Powered By Osherlevi7 Team"
           SLACK_MSG_AUTHOR: ${{ inputs.AUTHOR_MESSAGES }}
-          SLACK_USERNAME: "osherLevi7"
+          SLACK_USERNAME: "lastpass-api-ga-code"
     env:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+

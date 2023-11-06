@@ -1,0 +1,67 @@
+name: "[API] Provision TOTP via LastPass CLI"
+on:
+  repository_dispatch:
+    types: 
+      - install-lastpass-cli
+########################################################
+## Global Variables from the API call on  pre_deploy
+########################################################
+env: 
+  EVENT_TYPE: ${{ github.event.client_payload.event_type }}
+  VAULT_LPASS_USER: ${{ github.event.client_payload.vault_lpass_user }}
+  ANSIBLE_HOST: ${{ github.event.client_payload.ansible_fqdn }}
+  GA_CODE: ${{ github.event.client_payload.ga_code }}
+  DATE: ${{ github.event.client_payload.date }}
+  TIME: ${{ github.event.client_payload.time }}
+
+  
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    # - name: Install Homebrew
+    #   run: |
+    #     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    #   if: success()
+    - name: Install LastPass CLI
+      run: |
+        brew install lastpass-cli
+      if: success()
+    - name: Login to the last pass 
+      run: |
+        echo ${{ secrets.VAULT_LPASS }} | LPASS_DISABLE_PINENTRY=1 lpass login ${{ env.VAULT_LPASS_USER }}
+    - name: Create LastPass share folder 
+      run: |
+        lpass share create ${{ env.ANSIBLE_HOST }}
+      if: success()
+    - name: Save recovery codes to LastPass
+      run: |
+        echo -e "Creation Date:\n ${{ env.DATE }} | ${{ env.TIME }}\n \n Username:\n dist\n \n Login Command:\n $ ssh srv@${{ env.ANSIBLE_HOST }}\n \n TOTP-Codes:\n ${{ env.GA_CODE }}\n" | lpass add --sync=now --non-interactive --notes "Shared-${{ env.ANSIBLE_HOST}}/${{ env.ANSIBLE_HOST }}"
+    - name: Sync the password to the server
+      run: | 
+        lpass sync
+  success-notify-user:
+    needs: build
+    uses: osherlevi7/dev/.github/workflows/send-slack-notification.yml@maim
+    with:
+      SLACK_CHANNEL_ID: ga-code-lpass
+      TITLE_MESSAGE: "New password for dist ${{ github.event.client_payload.ansible_fqdn }}"
+      BODY_MESSAGE: "SUCCESS.\n JOB URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "
+      COLOR_MESSAGES: "008000" # #008000 (green) #FF0000 (red)
+      AUTHOR_MESSAGES: ${{ github.job.actor }} 
+    secrets: inherit
+
+  error-notify-user:
+    needs: build
+    if: ${{ failure() }}
+    uses: osherlevi7/dev/.github/workflows/send-slack-notification.yml@maim
+    with:
+      SLACK_CHANNEL_ID: ga-code-lpass
+      TITLE_MESSAGE: "A failure occurred when trying to save a new password for dist ${{ github.event.client_payload.ansible_fqdn }}"
+      BODY_MESSAGE: "FAILURE.\n JOB URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "
+      AUTHOR_MESSAGES: ${{ github.job.actor }} 
+      COLOR_MESSAGES: "FF0000" # #008000 (green) #FF0000 (red)
+      ICON_EMOJI: "alert"
+    secrets: inherit
