@@ -34,7 +34,7 @@ on:
           - "my-app"
 
 
-name: Restart Deployment
+
 concurrency:
   group: "ci-${{ github.ref }}"
 defaults:
