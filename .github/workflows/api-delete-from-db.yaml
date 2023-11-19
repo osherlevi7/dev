@@ -1,4 +1,4 @@
-name: "[Cron] Daily RPort Tunnels Cleanup"
+name: "[cron] Daily RPort Tunnels Cleanup"
 
 
 # on:
