@@ -1,0 +1,92 @@
+name: "[Cron] Daily RPort Tunnels Cleanup"
+
+
+# on:
+#   schedule:
+    # - cron: '* * * * *'  # Triggers the workflow at 2:00 AM every day
+
+on:
+  push:
+    branches:
+      - cron
+
+jobs:
+  cleanup_tunnels_develop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Execute Cleanup Script - Staging
+        id: cleanup
+        run: |
+            #!/bin/bash
+            # Load your API credentials and endpoint
+            username=${{ secrets.CLIENT_ID }}
+            password=${{ secrets.CLIENT_SECRET }}  
+            base_url="https://app.staging.com/api/v1"
+            
+            # Get all open tunnels
+            tunnels=$(curl -u "$username:$password" "$base_url/tunnels")
+            echo "#####################################################"
+            echo "#####################################################"
+            
+            # Check if there are tunnels
+            if [[ $(echo "$tunnels" | jq -c '.data | length') -eq 0 ]]; then
+            echo "No open tunnels found."
+            fi
+
+            # Parse tunnel data and delete each tunnel
+            echo "#####################################################"
+            if [[ "$tunnels" != "null" ]]; then
+            for tunnel in $(echo "$tunnels" | jq -c '.data[]'); do
+                client_id=$(echo "$tunnel" | jq -r '.client_id')
+                tunnel_id=$(echo "$tunnel" | jq -r '.id')
+                echo 'client_id: ' $client_id
+                echo 'tunnel_id: ' $tunnel_id
+                echo "$base_url/clients/$client_id/tunnels/$tunnel_id"
+                # Delete the tunnel
+                curl -X DELETE "$base_url/clients/$client_id/tunnels/$tunnel_id" \
+                -u "$username:$password"
+                echo ""
+                echo "Deleted tunnel with ID $tunnel_id for client $client_id."
+            done
+            fi
+
+            # Additional logging or cleanup steps
+            echo "-----------------------------------------"
+            echo "Logging additional details..."
+            echo "Client IDs: " $(echo "$tunnels" | jq -r '.data[] | .client_id')
+            echo "Tunnel IDs: " $(echo "$tunnels" | jq -r '.data[] | .id')
+            echo "-----------------------------------------"
+            echo "Completed cleanup process."
+
+            echo "cleanup_output=$(echo "$tunnels" | jq -r '.data[] | .client_id')" >> $GITHUB_OUTPUT
+
+
+    outputs:
+        cleanup_output: ${{ steps.cleanup.outputs.cleanup_output }}
+    
+  success-notify-user:
+    needs: [cleanup_tunnels_develop]
+    uses: osherlevi7/dev/.github/workflows/send-slack-notification.yml@maim
+    with:
+        SLACK_CHANNEL_ID: tunnels-destroying
+        TITLE_MESSAGE: '"Seccessfully destroyed - ${{ needs.cleanup_tunnels_develop.outputs.cleanup_output }}"'
+        BODY_MESSAGE: "SUCCESS.\n JOB URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "
+        COLOR_MESSAGES: "008000" # #008000 (green) #FF0000 (red)
+        AUTHOR_MESSAGES: ${{ github.job.actor }} 
+    secrets: inherit
+
+  error-notify-user:
+    needs: [cleanup_tunnels_develop]
+    if: ${{ failure() }}
+    uses: osherlevi7/dev/.github/workflows/send-slack-notification.yml@maim
+    with:
+        SLACK_CHANNEL_ID: tunnels-destroying
+        TITLE_MESSAGE: "A failure occurred when trying to destroy tunnels"
+        BODY_MESSAGE: "FAILURE.\n JOB URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "
+        AUTHOR_MESSAGES: ${{ github.job.actor }} 
+        COLOR_MESSAGES: "FF0000" # #008000 (green) #FF0000 (red)
+        ICON_EMOJI: "alert"
+    secrets: inherit
