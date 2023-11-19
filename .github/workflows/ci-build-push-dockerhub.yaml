@@ -77,7 +77,7 @@ jobs:
     name: IF TERRAFORM CHANGED | Run Checkov terraform SCA
     needs: [affected-services]
     if: contains(needs.affected-services.outputs.affected_services_output, 'terraform')
-    uses: ./.github/workflows/checkov-terraform.yaml
+    uses: ./.github/workflows/ci-checkov-terraform.yaml
     with:
       services: ${{needs.affected-services.outputs.affected_services_output}}
 
