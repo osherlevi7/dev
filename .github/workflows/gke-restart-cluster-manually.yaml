@@ -1,4 +1,5 @@
 name: "[gke] | Restart a GKE cluseter"
+
 # The GitHub Actions docs (https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on)
 # describe other options for 'on', 'pull_request' is a good default.
 

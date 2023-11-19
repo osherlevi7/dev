@@ -1,4 +1,4 @@
-name: CI | Run continuous integration to DockerHub
+name: "[ci-cd] | Run continuous integration to DockerHub"
 on:
   # pull_request:
   #   types:

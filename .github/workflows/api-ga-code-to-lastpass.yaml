@@ -1,4 +1,4 @@
-name: "[API] | Provision TOTP via LastPass CLI"
+name: "[api] | Provision TOTP via LastPass CLI"
 on:
   repository_dispatch:
     types: 
