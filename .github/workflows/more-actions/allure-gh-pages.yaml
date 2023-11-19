@@ -1,4 +1,4 @@
-name: pytest-allure-single-test
+name: "[github-pages] | pytest-allure-single-test"
 
 on:
   workflow_dispatch:

@@ -1,5 +1,5 @@
 #  Static code analysis tool for terraform
-name: JOB | Checkov terraform code static code analysis. 
+name: "[ci-cd] | Checkov terraform code static code analysis."
 # on:
   # push:
   #   branches: ["main", "feature/**", "fix/**"]

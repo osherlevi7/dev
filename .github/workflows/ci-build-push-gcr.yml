@@ -1,4 +1,4 @@
-name: JOB | Run continuous integration
+name: "[ci-cd] | Run continuous integration"
 on:
   # pull_request:
   #   types:
