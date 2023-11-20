@@ -1,25 +1,12 @@
 FROM containrrr/watchtower:latest as parent
-#replace the image sha with the real one.
-FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine@sha256:<sha256sum> as google 
 
-FROM python:3.12.0a1-alpine3.15 as served
+FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine as google
+
+FROM python:3-alpine as served
 
 LABEL "com.centurylinklabs.watchtower"="true"
 
-RUN apk update && \
-    apk add --no-cache \
-        bash \
-        docker \
-        ca-certificates \
-        tzdata \
-    && rm -rf /var/cache/apk/*
-
-# Create a non-root user
-RUN adduser -D appuser && \
-    chown -R appuser /usr/local && \
-    chmod -R 755 /usr/local
-
-USER appuser
+RUN apk update && apk add --no-cache bash docker ca-certificates tzdata
 
 EXPOSE 8080
 

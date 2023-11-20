@@ -1,1 +1,0 @@
-0 */8 * * * /usr/local/bin/gcr_docker_login.sh > /var/log/gcr_docker_login.log
