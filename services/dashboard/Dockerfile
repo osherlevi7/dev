@@ -11,6 +11,8 @@ WORKDIR /app
 COPY package.json /app/package.json
 # Install dependencies as non-root user
 RUN npm install --force
+# Copy modules files
+COPY node_modules /app/node_modules
 # Set ownership of app directory to non-root user
 RUN chown -R appuser:appgroup /app
 # Switch to non-root user
@@ -37,6 +39,7 @@ RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
 WORKDIR /app
 # Copy app files and dependencies from base and build stages
 COPY --from=base --chown=appuser:appgroup /app/package.json /app/package.json
+COPY --from=base --chown=appuser:appgroup /app/node_modules/ /app/node_modules/
 COPY --from=build --chown=appuser:appgroup /app/entrypoint.sh /app/
 COPY --from=build --chown=appuser:appgroup /app/ /app/
 # Set environment variables
