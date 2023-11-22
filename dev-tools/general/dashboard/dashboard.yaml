@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dashboard
+  template:
+    metadata:
+      labels:
+        app: dashboard
+    spec:
+      containers:
+      - name: dashboard
+        image: osherlevi7/dashboard:main-cbac77a
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: "750m"  # Requests 250 milliCPUs
+            memory: "512Mi"  # Requests 512 MiB memory
+          limits:
+            cpu: "1000m"  # Limits 500 milliCPUs (should be greater than or equal to requests)
+            memory: "1024Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+spec:
+  selector:
+    app: dashboard
+  ports:
+  - name: http  # Give it a name, e.g., "http"
+    protocol: TCP
+    port: 80
+    targetPort: 5000
+  type: LoadBalancer
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: dashboard-config
+# data:
+#   REACT_APP_VAR: "Your React App Variable"
