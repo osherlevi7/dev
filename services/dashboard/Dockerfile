@@ -8,7 +8,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 # Set working directory and copy requirements
 WORKDIR /app
-COPY package.json /app/package.json
+COPY . /app/package.json
 # Install dependencies as non-root user
 RUN npm install --force
 # Copy modules files
