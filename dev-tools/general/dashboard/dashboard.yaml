@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
       - name: dashboard
-        image: osherlevi7/dashboard:main-5a439a4
+        image: osherlevi7/dashboard:main-latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         resources:
