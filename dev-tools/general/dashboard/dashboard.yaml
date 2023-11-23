@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: dashboard
-        image: osherlevi7/dashboard:main-cbac77a
+        image: osherlevi7/dashboard:main-5a439a4
         ports:
         - containerPort: 5000
         resources:
@@ -23,8 +23,8 @@ spec:
             cpu: "750m"  # Requests 250 milliCPUs
             memory: "512Mi"  # Requests 512 MiB memory
           limits:
-            cpu: "1000m"  # Limits 500 milliCPUs (should be greater than or equal to requests)
-            memory: "1024Mi"
+            cpu: "2000m"  # Limits 500 milliCPUs (should be greater than or equal to requests)
+            memory: "2048Mi"
 ---
 apiVersion: v1
 kind: Service
@@ -36,9 +36,9 @@ spec:
   ports:
   - name: http  # Give it a name, e.g., "http"
     protocol: TCP
-    port: 80
+    port: 5000
     targetPort: 5000
-  type: LoadBalancer
+  type: NodePort
 # ---
 # apiVersion: v1
 # kind: ConfigMap
