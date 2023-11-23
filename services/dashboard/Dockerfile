@@ -11,7 +11,6 @@ WORKDIR /app
 COPY . /app
 # Install dependencies as non-root user
 RUN npm install --force
-
 # Set ownership of app directory to non-root user
 RUN chown -R appuser:appgroup /app
 # Switch to non-root user
