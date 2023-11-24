@@ -1,4 +1,4 @@
-FROM node:20.8.0-slim AS base
+FROM node:iron-bookworm-slim AS base
 # Set non-root user and group
 RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
 # Update and install required packages
@@ -18,7 +18,7 @@ USER appuser
 
 
 
-FROM node:20.8.0-slim AS build
+FROM node:iron-bookworm-slim AS build
 # Set non-root user and group
 RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
 # Copy entrypoint and app files
@@ -30,7 +30,7 @@ RUN chown -R appuser:appgroup /app
 # Switch to non-root user
 USER appuser
 
-FROM node:20.8.0-slim AS serving
+FROM node:iron-bookworm-slim AS serving
 # Set non-root user and group
 RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
 # Set working directory
