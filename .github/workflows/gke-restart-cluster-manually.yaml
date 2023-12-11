@@ -64,7 +64,7 @@ jobs:
           credentials_json: "${{ secrets.GKE_DEPLOY_SA }}"  
 
       - name: Step 3 | Auth with Google GKE Develop
-        uses: "google-github-actions/get-gke-credentials@v1"
+        uses: "google-github-actions/get-gke-credentials@v2"
         if: false == contains(github.event.inputs.cluster_name, 'production')
         with:
           cluster_name: "${{ inputs.cluster_name }}"
@@ -72,7 +72,7 @@ jobs:
           project_id: develop-project
 
       - name: Step 3 | Auth with Google GKE Prod
-        uses: "google-github-actions/get-gke-credentials@v1"
+        uses: "google-github-actions/get-gke-credentials@v2"
         if: contains( github.event.inputs.cluster_name, 'production')
         with:
           cluster_name: "${{ inputs.cluster_name }}"
