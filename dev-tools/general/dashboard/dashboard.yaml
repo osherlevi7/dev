@@ -35,8 +35,7 @@ spec:
   selector:
     app: dashboard
   ports:
-  - name: http  # Give it a name, e.g., "http"
-    protocol: TCP
+  - protocol: TCP
     port: 5000
     targetPort: 5000
   type: NodePort
@@ -47,3 +46,29 @@ spec:
 #   name: dashboard-config
 # data:
 #   REACT_APP_VAR: "Your React App Variable"
+
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: dashboard
+#   annotations:
+#     ingress.kubernetes.io/ssl-redirect: "false"
+# spec:
+#   rules:
+#   - http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: dashboard
+#             port:
+#               number: 5000
+#       # - path: /api/
+#       #   pathType: Prefix
+#       #   backend:
+#       #     service:
+#       #       name: conduit-backend-service
+#       #       port:
+#       #         number: 3000
