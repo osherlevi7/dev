@@ -52,14 +52,14 @@ jobs:
       - name: Step 2 | Authenticate to Google Cloud
         id: "auth-prod"
         if: contains(github.event.inputs.cluster_name, 'production')
-        uses: "google-github-actions/auth@v1"
+        uses: "google-github-actions/auth@v2"
         with:
           credentials_json: "${{ secrets.GCP_PROD_K8S }}"
 
       - name: Step 2 | Authenticate to Google Cloud-develop
         id: "auth-develop"
         if: false == contains(github.event.inputs.cluster_name, 'production') 
-        uses: "google-github-actions/auth@v1"
+        uses: "google-github-actions/auth@v2"
         with:
           credentials_json: "${{ secrets.GKE_DEPLOY_SA }}"  
 
