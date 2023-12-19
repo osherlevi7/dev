@@ -1,0 +1,31 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: cluster
+image: rancher/k3s:v1.21.4-k3s1
+servers: 1
+agents: 2
+ports:
+  - port: 8080:8080
+  - port: 3003:3003
+  - port: 3004:3004
+  - port: 5000:5000
+    nodeFilters:
+    - loadbalancer
+
+
+  
+# - port: 8443:443@loadbalancer
+# volumes:
+#   - volume: /my/host/path:/path/in/node@agent[0]
+# env:
+#   - envVar: SOME_KEY=SOME_VALUE@server[0]
+# options:
+#   k3s:
+#     extraArgs:
+#       - arg: --no-deploy=traefik
+#   kubeconfig:
+#     updateDefaultKubeconfig: true
+#     switchCurrentContext: true
+
+
