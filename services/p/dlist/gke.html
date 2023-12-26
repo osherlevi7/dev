@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<!--
+	Osher's Portfolio Webapp
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Osher's Portfolio Webapp</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload landing">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<h1 id="logo"><a href="../index.html">DevOshOps</a></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="https://www.linkedin.com/in/osher-levi-49794a1ab/">LinkedIn</a></li>
+						<li><a href="../images/OsherLevi-CV.pdf">CV</a></li>
+						<li>
+							<a href="#">Architecture Projects</a>
+							<ul>
+								<li><a href="secOps.html">DevSecOps</a></li>
+								<li><a href="gke.html">POC | GKE Secured Cluster</a></li>
+								<li><a href="jenkins.html">POC | Jenkins On GKE </a></li>
+								<li><a href="bot-app.html">POC | E2E Bot-App</a></li>
+								<li><a href="zerotruat.html">POC | IoT Zero Trust Connection</a></li>
+								<li><a href="zerotruat.html">POC | GCP Armor</a></li>
+
+								<!-- <li>
+									<a href="#">Submenu</a>
+									<ul>
+										<li><a href="#">Option 1</a></li>
+										<li><a href="#">Option 2</a></li>
+										<li><a href="#">Option 3</a></li>
+										<li><a href="#">Option 4</a></li>
+									</ul>
+								</li> -->
+							</ul>
+						</li>
+						<li><a href="../cism.html">CISM</a></li>
+						<!-- <li><a href="sism.html">SISM</a></li>x -->
+						<!-- <li><a href="#" class="button primary">Sign Up</a></li> -->
+					</ul>
+				</nav>
+			</header>
+
+
+			<!-- Main -->
+				<div id="main" class="wrapper style1">
+					<div class="container">
+						<header class="major">
+							<h2>POC | GKE Secured Cluster</h2>
+							<p></p>
+						</header>
+						<!-- Content -->
+							<section id="content">
+								<a href="#" class="image fit"><img src="../images/gke-Cluster.jpg" alt="" /></a>
+								<h3>Architecture</h3>
+									<p>Part 1: Building the infrastructure for the environment in Terraform is an efficient way to ensure consistency and repeatability across environments. Utilizing Terraform to deploy network infrastructure components such as Cloud Firewall, Kubernetes Engine, Secrets Manager, Cloud IAMs, Cloud Routes, Cloud Router, and VPC, creates a solid foundation for your Private GKE Cluster. Building two node pools for infra and services purposes is also a recommended best practice for managing resources effectively. </p>
+									<p>Part 2: Building the platform for the environment in Terraform provides an automated and streamlined approach for provisioning Cloud DNS, External IP for Load Balancing, Ingress Controller, Cloud Armor, Cloud SQL, Pub/Sub Messaging, and Cloud Scheduler. Deploying these dependencies as part of the platform setup ensures that the environment is configured for scalability and reliability. Utilizing Helm charts and a Helm repository can also streamline the deployment of your application and provide easy versioning and rollback capabilities.</p>
+									<p>Part 3: Creating the microservices application for the environment is an essential part of the architecture. Using Helm charts to release the local application and a Helm repository to manage the deployment of your application, provides a scalable and efficient approach to managing your application deployment. It's recommended to containerize your application for portability and ease of deployment. Additionally, incorporating automated testing and monitoring in your pipeline can help ensure the reliability and resilience of your application.</p>
+									<h5>So, implementing these best practices will provide a solid foundation for building a Private GKE Cluster architecture that is scalable, reliable, and secure.</h5>
+								<br>
+								<br>
+
+								<h3>Key Components</h3>
+								<p>The project is built using Terraform to create an environment infrastructure, platform, and microservices for an application. <br>
+									Part 1 involves creating the network infrastructure and Kubernetes engine with two node pools for infrastructure and services. Other services, such as cloud firewall, secrets manager, IAM, and routes, are also included. <br>
+									Part 2 involves creating environment dependencies, including DNS, an external IP for load balancing, ingress controller, Cloud Armor for security, Cloud SQL for database management, Pub/Sub messaging for communication, and Cloud Scheduler for scheduling tasks. <br>
+									Part 3 involves creating specific application microservices using Helm charts for deployment, and includes a Helm repo that will be installed on the application itself. <br>
+									The project appears to prioritize security by including services like Cloud Armor, and the infrastructure is built with network security in mind, such as using VPCs and routing tables. <br>
+									The project is built using best practices for cloud infrastructure, including infrastructure as code, scalable and modular architecture, and the use of managed services to reduce maintenance and increase reliability.</p>
+								<br>									
+								<ul>
+									<li>A Private Cluster in GKE is a deployment option that isolates the master endpoint of the cluster from the public internet.</li>
+									<li>In a Private Cluster, the Kubernetes API server is only accessible from within a designated Virtual Private Cloud (VPC) network.</li>
+									<li>To access a Private Cluster, a bastion host is used as a proxy to establish a secure connection to the Kubernetes API server.</li>
+									<li>GKE's Node Auto-Upgrade and Kubernetes Role-Based Access Control (RBAC) features can be used to enhance the security of a Private Cluster environment.</li>
+									<li>Private Clusters are a more secure deployment option for organizations that require additional control and isolation of their Kubernetes clusters.</li>
+								</ul>
+							</section>
+					</div>
+				</div>
+			<!-- Footer -->
+			<footer id="footer">
+				<ul class="icons">
+					<li><a href="https://www.linkedin.com/in/osher-levi-49794a1ab/" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+					<li><a href="https://www.instagram.com/osher_levi/" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="https://github.com/osherlevi7/" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+					<li><a href="mailto:osher.levi7@gmail.com/" class="icon solid alt fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy;All rights reserved.</li>
+				</ul>
+			</footer>
+		</div>
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/jquery.dropotron.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+	</body>
+</html>

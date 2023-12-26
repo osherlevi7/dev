@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<!--
+	Osher's Portfolio Webapp
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Osher's Portfolio Webapp</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload landing">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<h1 id="logo"><a href="../index.html">DevOshOps</a></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="https://www.linkedin.com/in/osher-levi-49794a1ab/">LinkedIn</a></li>
+						<li><a href="../images/OsherLevi-CV.pdf">CV</a></li>
+						<li>
+							<a href="#">Architecture Projects</a>
+							<ul>
+								<li><a href="secOps.html">DevSecOps</a></li>
+								<li><a href="gke.html">POC | GKE Secured Cluster</a></li>
+								<li><a href="jenkins.html">POC | Jenkins On GKE </a></li>
+								<li><a href="bot-app.html">POC | E2E Bot-App</a></li>
+								<li><a href="zerotruat.html">POC | IoT Zero Trust Connection</a></li>
+								<li><a href="armor.html">POC | GCP Armor</a></li>
+s
+								<!-- <li>
+									<a href="#">Submenu</a>
+									<ul>
+										<li><a href="#">Option 1</a></li>
+										<li><a href="#">Option 2</a></li>
+										<li><a href="#">Option 3</a></li>
+										<li><a href="#">Option 4</a></li>
+									</ul>
+								</li> -->
+							</ul>
+						</li>
+						<li><a href="../cism.html">CISM</a></li>
+						<!-- <li><a href="sism.html">SISM</a></li> -->
+						<!-- <li><a href="#" class="button primary">Sign Up</a></li> -->
+					</ul>
+				</nav>
+			</header>
+
+
+			<!-- Main -->
+				<div id="main" class="wrapper style1">
+					<div class="container">
+						<header class="major">
+							<h2>POC | GCP Armor (layer 7 of the OSI model)</h2>
+							<p>Google Cloud Armor with HTTP(S) Load Balancing and IAP </p>
+						</header>
+						<div class="row gtr-150">
+							<div class="col-8 col-12-medium">
+
+								<!-- Content -->
+									<section id="content">
+										<a href="#" class="image fit"><img src="../images/armor.png" alt="" /></a>
+										<h3>Cloud Armor </h3>
+										<p>Cloud Armor is a security service provided by Google Cloud Platform (GCP) that helps protect websites and applications from DDoS attacks and other web-based threats. It is a managed service that provides both global load balancing and security policies for web applications hosted on GCP.</p>
+										<p>Cloud Armor uses a set of pre-configured security policies, called security rules, that are used to block malicious traffic and allow legitimate traffic. These security rules are based on IP addresses, geographic locations, and request patterns, and can be customized to meet the specific security requirements of a web application.</p>
+										<p>Cloud Armor integrates with other GCP services, such as Google Kubernetes Engine (GKE), Compute Engine, and Cloud Load Balancing, to provide a comprehensive security solution for web applications hosted on GCP. 
+										Cloud Armor also provides logging and monitoring capabilities that enable administrators to monitor traffic and security events in real-time, and to create custom alerts based on specific security events or traffic patterns.</p>
+										<h3>Key Components</h3>
+										<ul>
+											<li>Security Rules: Cloud Armor provides a set of pre-configured security rules that can be customized to meet the specific security requirements of a web application. These rules are based on IP addresses, geographic locations, and request patterns.</li>
+											<li>IP Lists: Cloud Armor allows administrators to create custom IP lists to block or allow traffic from specific IP addresses or ranges.</li>
+											<li>WAF Rules: Cloud Armor supports the use of Web Application Firewall (WAF) rules, which are used to block malicious traffic and protect web applications from common attacks such as SQL injection and cross-site scripting (XSS).</li>
+											<li>DDoS Protection: Cloud Armor provides DDoS protection by using Google's global infrastructure to absorb and mitigate DDoS attacks before they reach the web application.</li>
+											<li>Logging and Monitoring: Cloud Armor provides logging and monitoring capabilities that enable administrators to monitor traffic and security events in real-time, and to create custom alerts based on specific security events or traffic patterns.</li>
+											<li>Integration with Google Cloud Load Balancing or any: Cloud Armor integrates with Google Cloud Load Balancing to provide a comprehensive security solution for web applications hosted on GCP.
+												Overall, these components work together to provide a comprehensive security solution for web applications hosted on GCP.</li>
+										</ul>
+									</section>
+
+							</div>
+							<div class="col-4 col-12-medium">
+
+								<!-- Sidebar -->
+									<section id="sidebar">
+										<section>
+											<h3>Architecture</h3>
+											<p>Identity-Aware Proxy (IAP) verifies a user's identity and then determines whether that user should be permitted to access an application. 
+
+
+												To enable IAP for the external HTTP(S) load balancer, you enable it on the load balancer's backend services.  
+												
+												
+												Similarly, edge Google Cloud Armor security policies are attached to the backend services of an external HTTP(S) load balancer. 
+												
+												
+												If Google Cloud Armor security policies and IAP are both enabled for a backend service of an external HTTP(S) load balancer, the IAP evaluation happens first. 
+												
+												
+												If IAP blocks a request, Google Cloud Armor does not evaluate the request. 
+												
+												
+												If IAP successfully authenticates a request, Google Cloud Armor then evaluates the request. 
+												
+												
+												The request is blocked if a Google Cloud Armor security policy produces a deny decision. </p>
+											<footer>
+												<ul class="actions">
+													<li><a href="#" class="button">Learn More</a></li>
+												</ul>
+											</footer>
+										</section>
+										<hr />
+										<section>
+											<a href="#" class="image fit"><img src="../images/aws_armor.jpeg" alt="" /></a>
+											<h3>Google Cloud Platform</h3>
+											<p>Google Cloud Armor helps protect your infrastructure and applications from Layer 3/Layer 4 network or protocol-based volumetric distributed denial-of-service (DDoS) attacks, volumetric Layer 7 attacks, and other targeted application attacks. It leverages Google's global network and distributed infrastructure to detect and absorb attacks and filter traffic through user-configurable security policies at the edge of Google's network, far upstream of your workloads.</p>
+											<footer>
+												<ul class="actions">
+													<li><a href="#" class="button">Learn More</a></li>
+												</ul>
+											</footer>
+										</section>
+									</section>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<ul class="icons">
+					<!-- <li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li> -->
+					<!-- <li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li> -->
+					<li><a href="https://www.linkedin.com/in/osher-levi-49794a1ab/" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+					<li><a href="https://www.instagram.com/osher_levi/" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="https://github.com/osherlevi7/" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+					<li><a href="mailto:osher.levi7@gmail.com/" class="icon solid alt fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy;All rights reserved.</li>
+				</ul>
+			</footer>
+
+		</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/jquery.dropotron.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>

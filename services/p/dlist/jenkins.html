@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Osher's Portfolio Webapp</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload landing">
+		<div id="page-wrapper">
+			<!-- Header -->
+			<header id="header">
+				<h1 id="logo"><a href="../index.html">DevOshOps</a></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="https://www.linkedin.com/in/osher-levi-49794a1ab/">LinkedIn</a></li>
+						<li><a href="../images/OsherLevi-CV.pdf">CV</a></li>
+						<li>
+							<a href="#">Architecture Projects</a>
+							<ul>
+								<li><a href="secOps.html">DevSecOps</a></li>
+								<li><a href="gke.html">POC | GKE Secured Cluster</a></li>
+								<li><a href="jenkins.html">POC | Jenkins On GKE </a></li>
+								<li><a href="bot-app.html">POC | E2E Bot-App</a></li>
+								<li><a href="zerotruat.html">POC | IoT Zero Trust Connection</a></li>
+								<li><a href="armor.html">POC | GCP Armor</a></li>
+
+								<!-- <li>
+									<a href="#">Submenu</a>
+									<ul>
+										<li><a href="#">Option 1</a></li>
+										<li><a href="#">Option 2</a></li>
+										<li><a href="#">Option 3</a></li>
+										<li><a href="#">Option 4</a></li>
+									</ul>
+								</li> -->
+							</ul>
+						</li>
+						<li><a href="../cism.html">CISM</a></li>
+						<!-- <li><a href="sism.html">SISM</a></li> -->
+						<!-- <li><a href="#" class="button primary">Sign Up</a></li> -->
+					</ul>
+				</nav>
+			</header>
+
+
+			<!-- Main -->
+				<div id="main" class="wrapper style1">
+					<div class="container">
+						<header class="major">
+							<h2>POC | Jenkins On Private Cluster</h2>
+							<p>Automate End2End Deployment and configuration of Jenkins using CloudBuild on a Private GKE Cluster</p>
+						</header>
+						<div class="row gtr-150">
+							<div class="col-8 col-12-medium">
+
+								<!-- Content -->
+									<section id="content">
+										<a href="#" class="image fit"><img src="../images/jenkinsarchi.png" alt="" /></a>
+										<h3>Goal and Porpose of this project</h3>
+										<p>Automating the deployment of an application in a GKE private cluster using Jenkins CI/CD can be a time-consuming and manual process, involving tasks such as setting up infrastructure on GCP, creating jobs, building pipelines in Jenkins, and so on. In this blog, we'll explore how to streamline this process by automatically configuring Jenkins from a script file using Cloud Build, and deploying the application to a GKE private cluster.</p>
+										<h3>Key Components</h3>
+										<ul>
+											<li>For the best practice, we should enable workload identity in the GKE cluster to access the GCP services.</li>
+                                            <li>IAM Service Account for the application, and allow the Kubernetes service account to impersonate the IAM Service Account. Ensure that the IAM Service Account has the right roles</li>
+                                            <li>IAM for Cloud Build Cloud Build Editor (Cloud Build Service Agent,Cloud Build WorkerPool Owner,Compute Admin,DNS Administrator,Kubernetes Engine Admin,Project IAM Admin,Secret Manager Admin,Service Account Admin,Service Account User,Service Networking Admin,Storage Admin)</li>
+                                            <li>To access the GKE private cluster for Jenkins deployment and configurations from the Cloud Build, we need to configure a private worker pool.</li>
+                                            <li>We can only access the GKE cluster control plane using its private IP address, and if we want to use cloud build to deploy the application on the private GKE cluster, then we need to use Cloud Build private pools to access the GKE clusters.</li>
+                                            <li>Private pools are a set of worker instances that run in a Google Cloud project owned by Google and are peered to our VPC network using a VPC Network Peering connection. In this setup, the worker instances are allowed to communicate with the private IP address of the GKE cluster control plane.
+                                            <li>Enable Cloud Build worker instances to access the GKE cluster control plane, we can peer the private pool and the GKE cluster control plane with two VPC networks and then connect those two VPC networks using Cloud VPN. This peering and connection allow each side of the VPC tunnel to advertise the private pool and GKE cluster control plane networks, thus completing the route.</li>
+                                            <li>To enable Cloud Build worker instances to access the GKE cluster control plane, we can peer the private pool and the GKE cluster control plane with two VPC networks and then connect those two VPC networks using Cloud VPN. This peering and connection allow each side of the VPC tunnel to advertise the private pool and GKE cluster control plane networks, thus completing the route.</li>
+                                            <li>CloudBuild 2 triggers, on commit for running the terraform moduls (github_repo=dev/terraform), another trigger to deploy the Jenkins and Nginx Ingress.</li>
+									</section>
+
+							</div>
+							<div class="col-4 col-12-medium">
+
+								<!-- Sidebar -->
+									<section id="sidebar">
+										<section>
+											<h3>Architecture</h3>
+                                            <p>Private GKE Cluster: The private GKE cluster is the backbone of the architecture. It provides a secure and managed Kubernetes environment for running Jenkins and your application. The private cluster is not exposed to the internet and can only be accessed via VPN or private IP. </p>
+                                            <p>Master: The Jenkins master is responsible for coordinating the execution of CI/CD pipelines. It runs as a pod on the private GKE cluster and communicates with Jenkins agents to execute pipeline stages.</p>
+                                            <p>Jenkins Agents: Jenkins agents are responsible for executing pipeline stages. They run as pods on the private GKE cluster and are automatically provisioned and decommissioned by the Jenkins Kubernetes Plugin. By running agents in the same private GKE cluster as the Jenkins master, you can ensure secure communication and minimize latency.</p>
+                                            <p>Cloud Storage: Cloud storage is required for storing Jenkins configuration data, build artifacts, and other data. This can be provided by GCP persistent disks, GCS buckets, or other compatible storage options.</p>
+                                            <p>VPN or Private IP Access: To access the Jenkins master, you can use either VPN or private IP access. VPN access allows you to securely connect to the private GKE cluster from remote locations, while private IP access allows you to access the Jenkins master from within your private network.</p>
+                                            <p>Cloud Build Integration: You can integrate Cloud Build with Jenkins to automate the configuration of Jenkins and the deployment of your application. Cloud Build can be used to automatically create and configure Jenkins jobs, build Docker images, and deploy the application to the private GKE cluster.</p>
+                                            <p>So, this architecture provides a secure and scalable environment for running Jenkins and your application. By leveraging a private GKE cluster, you can ensure that your environment is isolated from the public internet and only accessible via secure channels. Additionally, by integrating Cloud Build with Jenkins, you can automate the entire CI/CD process and minimize manual intervention.</p>
+                                            </p>
+											<footer>
+                                                <ul class="actions">
+                                                    <li><a href="https://cloud.google.com/kubernetes-engine/docs/archive/jenkins-on-kubernetes-engine" class="button">Learn More</a></li>
+												</ul>
+											</footer>
+										</section>
+										<hr />
+										<section>
+                                            <a href="#" class="image fit"><img src="../images/jenkinssss.png" alt="" /></a>
+											<h3>Jenkins</h3>
+                                            <p>Jenkins is a popular open-source automation server used for continuous integration and continuous delivery (CI/CD) pipelines. When running Jenkins on Kubernetes, there are some best practices to follow to ensure that the environment is secure and reliable. </p>
+											<footer>
+												<ul class="actions">
+													<li><a href="https://www.jenkins.io/" class="button">Learn More</a></li>
+												</ul>
+											</footer>
+										</section>
+									</section>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<ul class="icons">
+					<!-- <li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li> -->
+					<!-- <li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li> -->
+					<li><a href="https://www.linkedin.com/in/osher-levi-49794a1ab/" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+					<li><a href="https://www.instagram.com/osher_levi/" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="https://github.com/osherlevi7/" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+					<li><a href="mailto:osher.levi7@gmail.com/" class="icon solid alt fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy;All rights reserved.</li>
+				</ul>
+			</footer>
+
+		</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/jquery.dropotron.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>

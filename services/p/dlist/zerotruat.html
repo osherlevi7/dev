@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<!--
+	Osher's Portfolio Webapp
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Osher's Portfolio Webapp</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload landing">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<header id="header">
+					<h1 id="logo"><a href="../index.html">DevOshOps</a></h1>
+					<nav id="nav">
+						<ul>
+							<li><a href="https://www.linkedin.com/in/osher-levi-49794a1ab/">LinkedIn</a></li>
+							<li><a href="../images/OsherLevi-CV.pdf">CV</a></li>
+							<li>
+								<a href="#">Architecture Projects</a>
+								<ul>
+									<li><a href="secOps.html">DevSecOps</a></li>
+									<li><a href="gke.html">POC | GKE Secured Cluster</a></li>
+									<li><a href="jenkins.html">POC | Jenkins On GKE </a></li>
+									<li><a href="bot-app.html">POC | E2E Bot-App</a></li>
+									<li><a href="zerotruat.html">POC | IoT Zero Trust Connection</a></li>
+									<li><a href="armor.html">POC | GCP Armor</a></li>
+
+									<!-- <li>
+										<a href="#">Submenu</a>
+										<ul>
+											<li><a href="#">Option 1</a></li>
+											<li><a href="#">Option 2</a></li>
+											<li><a href="#">Option 3</a></li>
+											<li><a href="#">Option 4</a></li>
+										</ul>
+									</li> -->
+								</ul>
+							</li>
+							<li><a href="../cism.html">CISM</a></li>
+							<!-- <li><a href="sism.html">SISM</a></li> -->
+							<!-- <li><a href="elements.html">Elements</a></li>
+							<li><a href="#" class="button primary">Sign Up</a></li> -->
+						</ul>
+					</nav>
+				</header>
+
+			<!-- Main -->
+				<div id="main" class="wrapper style1">
+					<div class="container">
+						<header class="major">
+							<h2>POC | IoT Zero Trust Connection Architecture</h2>
+							<p>IoT Zero Trust Connection Architecture is a security framework that aims to protect Internet of Things (IoT) devices and their data by implementing a zero-trust model for device connections. In this architecture, every device, user, and application is considered untrusted until proven otherwise.</p>
+						</header>
+						<div class="row gtr-150">
+							<div class="col-4 col-12-medium">
+
+								<!-- Sidebar -->
+									<section id="sidebar">
+										<section>
+											<h3>Architecture</h3>
+											<p>The architecture is based on the principle of micro-segmentation, where devices are divided into logical groups based on their functions and security requirements. Each group is assigned its own security policies and access controls, and devices are only allowed to communicate with other devices that are within the same group.</p>
+											<footer>
+												<ul class="actions">
+													<li><a href="#" class="button">Learn More</a></li>
+												</ul>
+											</footer>
+										</section>
+										<hr />
+										<section>
+											<a href="#" class="image fit"><img src="../images/aws_iot.png" alt="" /></a>
+											<h3>AWS</h3>
+											<p>Zero trust is a conceptual model and an associated set of mechanisms that provide security controls. These security controls do not depend solely on traditional network controls or network boundaries. It requires your users, devices, and systems to prove their trustworthiness, and it enforces fine-grained, identity-based rules that govern access to applications, data, and other assets.</p>
+											<footer>
+												<ul class="actions">
+													<li><a href="https://aws.amazon.com/blogs/iot/how-to-implement-zero-trust-iot-solutions-with-aws-iot-3/" class="button">Learn More</a></li>
+												</ul>
+											</footer>
+										</section>
+									</section>
+
+							</div>
+							<div class="col-8 col-12-medium imp-medium">
+
+								<!-- Content -->
+									<section id="content">
+										<a href="#" class="image fit"><img src="../images/iot.png" alt="" /></a>
+										<h3>Key Components</h3>
+										<p>
+											The IoT Zero Trust Connection Architecture includes the following components: </br>
+												1. Identity and Access Management (IAM): IAM is used to manage and authenticate users and devices that access the IoT network. </br>
+												2. Network Segmentation: This component divides the network into logical segments, each with its own access controls and security policies.</br>
+												   Segmentation reduces the attack surface of the network and limits the scope of any potential security breaches.</br>
+												3. Device Authentication: All devices must be authenticated before they can connect to the network.
+												   This involves verifying the device's identity, integrity, and trustworthiness.</br>
+												4. Encryption: Encryption is used to protect data in transit and at rest. 
+												This includes using secure protocols such as TLS for communication between devices, and encrypting data at rest on storage devices.</br>
+												5. Continuous Monitoring and Analytics: This component involves using machine learning and other analytics tools to monitor the network for suspicious activity and to identify potential security threats.<br>
+												6. Alerting System: An alerting system is a crucial component of the IoT Zero Trust Connection Architecture. It is designed to notify security teams and administrators of potential security threats or breaches in real-time. The alerting system can be configured to generate alerts for various scenarios, such as unauthorized access attempts, device failures, or abnormal network activity. </br>
+
+										</p>
+										<h3>Conclusion</h3>
+										<p>Zero-trust requires a phased approach tailored to an organization's unique cybersecurity threats and maturity level. AWS recommends a multilayered security approach for IoT and IIoT, utilizing strong identities, least privileged access, device monitoring, and updates. Incrementally transitioning to zero-trust is possible without eliminating traditional security approaches, starting with critical assets first. AWS suggests combining identity and network capabilities, such as micro-network segmentation, AWS Direct Connect, and VPC endpoints, and using AWS Outposts and Snowball Edge for certain workloads. Finally, apply zero-trust to systems and data based on their value and specific use cases.</p>
+										<ul>
+											<li>Zero-trust principles.</li>
+											<li>Strong identities.</li>
+											<li>Least privileged access.</li>
+											<li>Continuous device monitoring and anomaly detection.</li>
+											<li>Secure device connections for issue fixing and updates.</li>
+											<li>Incremental transition to zero-trust architecture.</li>
+											<li>Testing the environment before adopting zero-trust components.</li>
+											<li>Identity and network capabilities, such as micro-network segmentation, AWS Direct Connect, and VPC endpoints.</li>
+											<li>AWS Outposts and Snowball Edge for specific workloads.</li>
+											<li>Applying zero-trust based on value and specific use cases.</li>
+										</ul>
+									</section>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+			
+			<!-- Footer -->
+			<footer id="footer">
+				<ul class="icons">
+					<!-- <li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li> -->
+					<!-- <li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li> -->
+					<li><a href="https://www.linkedin.com/in/osher-levi-49794a1ab/" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+					<li><a href="https://www.instagram.com/osher_levi/" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="https://github.com/osherlevi7/" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+					<li><a href="mailto:osher.levi7@gmail.com/" class="icon solid alt fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy;All rights reserved.</li>
+				</ul>
+			</footer>
+
+		</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/jquery.dropotron.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
