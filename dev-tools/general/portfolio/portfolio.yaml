@@ -18,7 +18,7 @@ spec:
       - name: my-docker-creds
       containers:
       - name: portfolio
-        image: osherlevi7/portfolio
+        image: osherlevi7/portfolio:main-latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
