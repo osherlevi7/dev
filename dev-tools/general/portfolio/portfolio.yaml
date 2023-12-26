@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portfolio
+  namespace: portfolio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portfolio
+  template:
+    metadata:
+      labels:
+        app: portfolio
+    spec:
+      imagePullSecrets:
+      - name: my-docker-creds
+      containers:
+      - name: portfolio
+        image: osherlevi7/portfolio
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "750m"  # Requests 250 milliCPUs
+            memory: "512Mi"  # Requests 512 MiB memory
+          limits:
+            cpu: "2000m"  # Limits 500 milliCPUs (should be greater than or equal to requests)
+            memory: "2048Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: portfolio
+  namespace: portfolio
+spec:
+  selector:
+    app: portfolio
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
