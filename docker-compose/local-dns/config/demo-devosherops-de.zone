@@ -1,0 +1,17 @@
+$TTL 2d
+
+$ORIGIN demo.devosherops.de.
+
+@           IN  SOA     ns.demo.devosherops.de. info.devosherops.de. (
+                        20221228000     ;serial
+                        12h             ;refresh
+                        15m             ;retry
+                        3w              ;expire
+                        2h              ;minimum ttl
+                        )
+            IN  NS      ns.demo.devosherops.de.
+
+
+
+
+osher-srv   IN  A       192.168.50.222
