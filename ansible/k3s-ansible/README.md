@@ -1,16 +1,5 @@
 # Automated build of HA k3s Cluster with `kube-vip` and MetalLB
 
-![Fully Automated K3S etcd High Availability Install](https://img.youtube.com/vi/CbkEWcUZ7zM/0.jpg)
-
-This playbook will build an HA Kubernetes cluster with `k3s`, `kube-vip` and MetalLB via `ansible`.
-
-This is based on the work from [this fork](https://github.com/212850a/k3s-ansible) which is based on the work from [k3s-io/k3s-ansible](https://github.com/k3s-io/k3s-ansible). It uses [kube-vip](https://kube-vip.io/) to create a load balancer for control plane, and [metal-lb](https://metallb.universe.tf/installation/) for its service `LoadBalancer`.
-
-If you want more context on how this works, see:
-
-📄 [Documentation](https://technotim.live/posts/k3s-etcd-ansible/) (including example commands)
-
-📺 [Watch the Video](https://www.youtube.com/watch?v=CbkEWcUZ7zM)
 
 ## 📖 k3s Ansible Playbook
 
