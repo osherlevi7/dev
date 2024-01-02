@@ -41,7 +41,7 @@ jobs:
       
       - name: FILES | Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v40.2.0
+        uses: tj-actions/changed-files@v41.0.0
 
       - name: CHANGED-FILE | List all changed files & Set affected services
         id: set-services
