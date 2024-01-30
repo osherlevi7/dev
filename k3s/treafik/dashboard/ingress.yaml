@@ -1,0 +1,99 @@
+# This is a Traefik IngressRoute configuration file for Kubernetes.
+# It defines a route for HTTP(S) traffic coming to host `192.168.0.223` on the `websecure` entry point.
+# The traffic is routed to the `api@internal` Traefik service.
+# The `traefik-dashboard-basicauth` middleware is applied to the route for basic authentication.
+# The IngressRoute is managed by the `traefik-external` Ingress Controller as specified in the annotations.
+# Uncomment the `tls` section to specify a Kubernetes Secret for TLS.
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+  namespace: traefik
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`k3s-traefik`) 
+      kind: Rule
+      middlewares:
+        - name: traefik-dashboard-basicauth
+          namespace: traefik
+      services:
+        - name: api@internal
+          kind: TraefikService
+#  tls:
+#    secretName: local-example-com-staging-tls
+
+# Example of multiple routes
+#  routes:
+#    - match: Host(`example.com`) && PathPrefix(`/api`)
+#      kind: Rule
+#      services:
+#        - name: api-service
+#          kind: Service
+#    - match: Host(`example.com`) && PathPrefix(`/web`)
+#      kind: Rule
+#      services:
+#        - name: web-service
+#          kind: Service
+
+# Example of advanced match rule
+#  routes:
+#    - match: Host(`example.com`) && PathPrefix(`/api`) && Headers(`X-Api-Version`, `v1`)
+#      kind: Rule
+#      services:
+#        - name: api-service
+#          kind: Service
+
+# Example of priority
+#  routes:
+#    - match: Host(`example.com`) && PathPrefix(`/api`)
+#      kind: Rule
+#      priority: 10
+#      services:
+#        - name: api-service
+#          kind: Service
+
+# Example of TLS configuration
+#  tls:
+#    secretName: example-com-tls
+
+# Example of multiple middlewares
+#  routes:
+#    - match: Host(`example.com`)
+#      kind: Rule
+#      middlewares:
+#        - name: middleware1
+#          namespace: default
+#        - name: middleware2
+#          namespace: default
+#      services:
+#        - name: web-service
+#          kind: Service
+
+# Example of load balancing
+#  routes:
+#    - match: Host(`example.com`)
+#      kind: Rule
+#      services:
+#        - name: service1
+#          kind: Service
+#          weight: 1
+#        - name: service2
+#          kind: Service
+#          weight: 2
+
+# Example of mirroring
+#  routes:
+#    - match: Host(`example.com`)
+#      kind: Rule
+#      services:
+#        - name: main-service
+#          kind: Service
+#          mirroring:
+#            name: mirror-service
+#            kind: Service
+#            weight: 10

@@ -1,0 +1,57 @@
+globalArguments:
+  - "--global.sendanonymoususage=false"
+  - "--global.checknewversion=false"
+
+additionalArguments:
+  - "--serversTransport.insecureSkipVerify=true"
+  - "--log.level=DEBUG"
+
+deployment:
+  enabled: true
+  replicas: 3
+  annotations: {}
+  podAnnotations: {}
+  additionalContainers: []
+  initContainers: []
+
+ports:
+  web:
+    redirectTo:
+      port: websecure
+  websecure:
+    tls:
+      enabled: true
+      
+ingressRoute:
+  dashboard:
+    enabled: false
+
+# This YAML file contains configuration settings for Traefik ingress controller.
+# The 'providers' section specifies the providers for Traefik to use.
+# - The 'kubernetesCRD' provider is enabled and configured to use the 'traefik-external' ingress class.
+#   It also allows external name services.
+# - The 'kubernetesIngress' provider is enabled and also allows external name services.
+# - The 'publishedService' section is disabled.
+providers:
+  kubernetesCRD:
+    enabled: true
+    ingressClass: traefik-external
+    allowExternalNameServices: true
+  kubernetesIngress:
+    enabled: true
+    allowExternalNameServices: true
+    publishedService:
+      enabled: false
+
+rbac:
+  enabled: true
+
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations: {}
+  labels: {}
+  spec:
+    loadBalancerIP: 192.168.0.224 # this should be an IP in the MetalLB range
+  loadBalancerSourceRanges: []
+  externalIPs: []

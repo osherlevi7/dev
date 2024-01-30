@@ -1,0 +1,23 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: default-headers
+  namespace: default
+spec:
+  headers:
+    browserXssFilter: true
+    contentTypeNosniff: true
+    forceSTSHeader: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 15552000
+    customFrameOptionsValue: SAMEORIGIN
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+
+
+#This code snippet is defining a Traefik middleware that adds default headers to HTTP responses.
+#The headers being added include browserXssFilter, contentTypeNosniff, forceSTSHeader, stsIncludeSubdomains, stsPreload, stsSeconds, customFrameOptionsValue, and customRequestHeaders.
+#The middleware is named "default-headers" and is specified to be used in the "default" namespace.
+
+

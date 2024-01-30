@@ -1,10 +1,53 @@
-# Setup gh-runner on Minikube
+# GitHub Enterprise Server Authentication
+The Actions Runner Controller must authenticate with GitHub Enterprise Server.
+To authenticate the runner controller against GitHub Enterprise Server you have two options:
 
-Install Docker.
-Install Minikube.
-Install Helm 
-Install kubectl
+* PAT (Personal Access Token)
+* GitHub Apps
 
+**Note that the runners can be registered at different levels** 
+
+* Enterprise
+* Organization
+* Repository
+
+In the next steps, you will create a GitHub App to authenticate and use it at the organization level.
+
+### Create a GitHub App
+To create a GitHub App, you need to be an admin of the GitHub Enterprise Server instance. You can find more information about GitHub Apps here.
+Navigate to your Organization settings.
+For this post, you will create a GitHub App owned by an organization, in the upper-right corner of any page, click your profile photo, then click Your organizations.
+
+Then, to the right of the organization, click Settings.
+In the left sidebar, click  **Developer settings** .
+Click New GitHub App.
+In "GitHub App name", type the name of your app.
+Optionally, in "Description", type a description of your app that users will see.
+In "Homepage URL", type the URL where users can learn more about your app, you can point to the Actions Runner Controller GitHub repository.
+In "Wehbook", uncheck Active.
+Then configure the permissions for your app. For this post, you will need to select the following permissions: (we will use Organization Runners)
+
+### Repository Permissions
+* Actions (read)
+* Metadata (read)
+* Organization Permissions
+* Self-hosted runners (read / write)
+
+If you want to register the runners at the Repository level, you will need different permissions as documented here.
+Keep the default values for the other options, and click Create GitHub App.
+In the next screen, Generate a Private key, and download it. You will need it later. (file arc-private-private-key.pem in the following steps)
+
+### Install the newly created GitHub App
+In the application settings,
+Find the Install App button. Click on it.
+Select the organization where you want to install the app. Then click Install.
+Select "All repositories" and click Install.
+
+# Pre-req
+**Setup gh-runner on k8s** 
+* Install Docker.
+* Install Helm 
+* Install kubectl
 ### Cert-Manager
 By default, actions-runner-controller uses cert-manager for certificate management of admission webhook, so we have to make sure cert-manager is installed on Kubernetes before we install actions-runner-controller. 
 ```sh
@@ -13,29 +56,52 @@ By default, actions-runner-controller uses cert-manager for certificate manageme
   kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.crds.yaml
   helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace
 ```
-
-
 **https://cert-manager.io/docs/installation/helm/**
 
-### PA token personal access token
+### PA token personal access token for REPO setting 
 ```sh
     export GITHUB_TOKEN="token"
     kubectl create ns actions-runner-system
     kubectl create secret generic controller-manager  -n actions-runner-system --from-literal=github_token=${GITHUB_TOKEN}
+    helm install -n actions-runner-system actions-runner-controller actions-runner-controller/actions-runner-controller 
 ```
 
+
+<br>
+<br>
+
+
+
+### PA token personal access token for ORG setting 
+The GitHub App data (that you can get from the GitHub App settings page):
+  * The App ID ( $GITHUB_APP_ID)
+  * The App Private Key file ( $GITHUB_APP_PRIVATE_KEY_FILEPATH )
+  * The APP Installation ID ( $GITHUB_APP_INSTALLATION_ID ). To get the Application Installation ID, go to the Application  Settings Page, and click on the Install App button. Then click on the Configure button. You will find the Installation ID in the URL of the page. (e.g. https://github.tugdualgrall.com/organizations/{ORG}/settings/installations/{INSTALL_ID} )
+
+<br>
 
 ### Install the controller
 
 ```sh
+    kubectl create namespace actions-runner-system
     helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
     helm repo update
-    helm upgrade --install --namespace actions-runner-system  --wait actions-runner-controller actions-runner-controller/actions-runner-controller --set syncPeriod=1m
-    
-
+    helm install -n actions-runner-system actions-runner-controller actions-runner-controller/actions-runner-controller
+    kubectl set env deploy actions-runner-controller -c manager GITHUB_ENTERPRISE_URL="$GITHUB_SERVER_URL" --namespace actions-runner-system
 ```
 
-### Create gh-runner repo deployment
+### Create the secret of the GH Application 
+```sh
+$ kubectl create secret generic controller-manager \
+    -n actions-runner-system \
+    --from-literal=github_app_id=${GITHUB_APP_ID} \
+    --from-literal=github_app_installation_id=${GITHUB_APP_INSTALLATION_ID} \
+    --from-file=github_app_private_key=${GITHUB_APP_PRIVATE_KEY_FILEPATH}
+```
+
+
+### Create gh-runner repo deployment for REPO settings
+
 **https://github.com/actions/actions-runner-controller/blob/master/docs/using-entrypoint-features.md**
 ```yaml
 apiVersion: actions.summerwind.dev/v1alpha1
@@ -48,13 +114,38 @@ spec:
  template:
    spec:
      repository: osherlevi7/dev
+     labels:
+      - k8s
+      - gitops
 ```
+
+### Create gh-runner repo deployment for ORG settings
+
+```yaml
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: runner-001
+  namespace: runners
+spec:
+  replicas: 1
+  template:
+    spec:
+      organization: demo
+      labels:
+        - arc
+        - kubernetes
+        - gke
+      group: Default   
+```
+
+
 
 # apply the repo-runner 
 ```sh
   kubectl create -f runner.yaml
 ```
-
+**https://github.com/actions/actions-runner-controller?tab=readme-ov-file**
 
 ## Docs
 
@@ -64,7 +155,7 @@ All additional docs are kept in the `docs/` folder, this README is solely for do
 
 **_The values are documented as of HEAD, to review the configuration options for your chart version ensure you view this file at the relevant [tag](https://github.com/actions/actions-runner-controller/tags)_**
 
-> _Default values are the defaults set in the charts `values.yaml`, some properties have default configurations in the code for when the property is omitted or invalid_
+* _Default values are the defaults set in the charts `values.yaml`, some properties have default configurations in the code for when the property is omitted or invalid_
 
 | Key                                                       | Description                                                                                                                               | Default                                                                                         |
 |-----------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|

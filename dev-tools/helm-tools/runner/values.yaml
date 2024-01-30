@@ -5,8 +5,9 @@
 replicaCount: 1
 
 github:
-  repository: osherlevi7/dev
-  labels: [k8s-workflow]
+  repository: osherlevi7/dev #["oufinx/repo1", "oufinx/repo2"]
+  # organization: 
+  labels: [k8s]
 
 namespace: actions-runner-system
 

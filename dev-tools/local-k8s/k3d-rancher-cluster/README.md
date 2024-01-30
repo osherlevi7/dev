@@ -9,7 +9,8 @@ curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | ba
 curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 # Creating the cluster 
 k3d cluster create mycluster -p "8900:30080@agent:0" -p "8901:30081@agent:0" -p "8902:30082@agent:0" --agents 2
-
+#Install the K9s cli tool
+curl -sS https://webinstall.dev/k9s | bash
 ```
 > This will create a cluster named “mycluster” with 3 ports exposed 30080, 30081 and 30082. These ports will map to ports 8900, 8901 and 8902 of your localhost respectively. The cluster will have 1 master node and 2 worker nodes. You can adjust these settings using the p and the agent flags as you wish.
 

@@ -1,0 +1,13 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+ name: gitops-runner
+ namespace: actions-runner-system
+spec:
+ replicas: 2
+ template:
+   spec:
+     organization: osherlevi7
+     labels:
+      - k8s
+      - gitops
