@@ -9,7 +9,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`treafik.scopiolabs.com`)
+    - match: Host(`treafik.osherlevi7.com`)
       kind: Rule
       middlewares:
         - name: traefik-dashboard-basicauth
