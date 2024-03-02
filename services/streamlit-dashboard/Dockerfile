@@ -1,4 +1,4 @@
-FROM python:3.10-slim AS base
+FROM python:3.13.0a4-slim AS base
 # Set non-root user and group
 RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
 # Update and install required packages
@@ -15,7 +15,7 @@ RUN pip install --user --no-cache-dir -r requirements.txt
 RUN chown -R appuser:appgroup /app
 # Switch to non-root user
 USER appuser
-FROM python:3.10-slim AS build
+FROM python:3.13.0a4-slim AS build
 # Set non-root user and group
 RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
 # Copy entrypoint and app files
@@ -26,7 +26,7 @@ COPY streamlit/ /app/streamlit/
 RUN chown -R appuser:appgroup /app
 # Switch to non-root user
 USER appuser
-FROM python:3.10-slim AS serving
+FROM python:3.13.0a4-slim AS serving
 # Set non-root user and group
 RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
 # Set working directory
