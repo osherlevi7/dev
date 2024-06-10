@@ -1,0 +1,34 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-wildcard-prod
+spec:
+  acme:
+    email: osher.levi@gogogle.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-wildcard-prod
+    solvers:
+    - dns01:
+        route53:
+          region: us-east-1
+          hostedZoneID: 0081TI88FQH
+          accessKeyID: A37BN63XEP
+          secretAccessKeySecretRef:
+            name: route53-secret-new
+            key: secretKey
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-domain-tls
+  namespace: default
+spec:
+  secretName: wildcard-domain-tls-prod
+  issuerRef:
+    name: letsencrypt-wildcard-prod
+    kind: ClusterIssuer
+  commonName: "*.k3s.com"
+  dnsNames:
+  - "*.k3s.com"

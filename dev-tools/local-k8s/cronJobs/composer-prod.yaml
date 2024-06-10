@@ -1,0 +1,232 @@
+---
+# kubectl apply -f composer-prod.yaml -n production
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: composer-management-scripts
+data:
+  create-script.sh: |
+
+    #!/bin/bash
+    set -e
+
+    echo "Starting environment creation process at $(date)"
+
+    # Setup environment variables
+    PROJECT_ID="project"
+    ENV_NAME="composer-small-prod"
+    REGION="us-east1"
+
+    echo "Creating new Google Cloud Composer environment..."
+    gcloud beta composer environments create $ENV_NAME \
+        --project=$PROJECT_ID \
+        --location=$REGION \
+        --labels=environment=production \
+        --network=production-vpc \
+        --subnetwork=private-subnet-production \
+        --web-server-allow-all \
+        --image-version=composer-2.7.0-airflow-2.7.3 \
+        --service-account=composer-sa@project.iam.gserviceaccount.com \
+        --maintenance-window-start="2023-01-01T00:00:00Z" \
+        --maintenance-window-end="2023-01-01T04:00:00Z" \
+        --maintenance-window-recurrence="FREQ=WEEKLY;BYDAY=TH,FR,SA"
+
+    echo "Environment created successfully."
+
+
+    echo "Updating PyPI packages..."
+    cat <<EOF > requirements.txt
+    oracledb~=1.3.2
+    slack-sdk~=3.23.0
+    apache-airflow-providers-oracle==3.6.0
+    EOF
+
+    res1=$(gcloud composer environments update $ENV_NAME --project=$PROJECT_ID --location=$REGION --update-pypi-packages-from-file requirements.txt 2>&1)
+      if [[ "$res1" == *"ERROR: (gcloud.composer.environments.update) INVALID_ARGUMENT: No change in configuration. Must specify a change to configuration.software_configuration.pypi_dependencies"* ]]; then
+        echo "This failure is expected if there is no change to requirements.txt"
+      fi
+      echo "Update Secrets"
+
+      res2=$(gcloud composer environments update $ENV_NAME --project=$PROJECT_ID --location=$REGION --update-airflow-configs secrets-backend=airflow.providers.google.cloud.secrets.secret_manager.CloudSecretManagerBackend 2>&1)
+      if [[ "$res2" == *"ERROR: (gcloud.composer.environments.update) INVALID_ARGUMENT: No change in configuration. Must specify a change to configuration.software_configuration.user_supplied_properties.[secrets]backend"* ]]; then
+        echo "This failure is expected if there is no change to secrets-backend"
+      fi
+
+      snap_folder=$(gsutil ls gs://$ENV_NAME-$REGION-backup/ | grep gs://$ENV_NAME-$REGION-backup/$ENV_NAME | tail -1)
+      echo "Snapshot Bucket -  ${snap_folder}..."
+      if [ -n "$snap_folder" ]; then
+          echo "Loading snapshot from ${snap_folder}..."
+          gcloud beta composer environments snapshots load $ENV_NAME \
+          --project $PROJECT_ID \
+          --location $REGION \
+          --snapshot-path ${snap_folder}/backup
+      else
+          echo "No snapshot to load"
+      fi
+
+      echo "All steps completed successfully."
+      echo "Listing all environments..."
+      gcloud composer environments list --project=$PROJECT_ID --locations=$REGION
+
+
+  destroy-script.sh: |
+
+    #!/bin/bash
+    set -e
+
+    echo "Starting environment deletion process at $(date)"
+
+    # Set environment variables
+    PROJECT_ID="project"
+    ENV_NAME="composer-small-prod"
+    REGION="us-east1"
+    DATE=$(date +%Y-%m-%d)
+    echo "PROJECT_ID: $PROJECT_ID"
+    echo "ENV_NAME: $ENV_NAME"
+    echo "REGION: $REGION"
+    echo "DATE: $DATE"
+
+    # Function to check Composer environment status
+    check_env_status() {
+        local max_attempts=35
+        local attempt=1
+        while [ $attempt -le $max_attempts ]; do
+            local status=$(gcloud composer environments describe $ENV_NAME --location $REGION --format='get(state)')
+            echo "Attempt $attempt: Environment status is $status"
+            if [[ "$status" == "RUNNING" ]]; then
+                return 0
+            elif [[ "$status" == "UPDATING" ]]; then
+                echo "Environment is updating. Retrying in 60 seconds..."
+                sleep 60
+            else
+                echo "Environment status is $status, which is not handled by this script."
+                return 1
+            fi
+            ((attempt++))
+        done
+        echo "Maximum attempts reached. Exiting."
+        return 1
+    }
+
+    # Ensure the environment is ready for operations
+    if ! check_env_status; then
+        exit 1
+    fi
+
+    SNAPSHOT_BUCKET="gs://$ENV_NAME-$REGION-backup"
+    SNAPSHOT_LOCATION="$SNAPSHOT_BUCKET/$ENV_NAME-$DATE/"
+    COMPOSER_BUCKET_RANDOM=$(gcloud composer environments describe $ENV_NAME --location $REGION --format="get(config.dagGcsPrefix)" | sed 's|/dags||')
+
+    # Ensure the environment is ready for operations
+    if ! check_env_status; then
+        exit 1
+    fi
+
+    # Back up DAGs 
+    echo "Retrieving backup folder paths..."
+    echo "Copying $COMPOSER_BUCKET_RANDOM/ to backup location $SNAPSHOT_LOCATION..."
+
+    if gsutil cp -r $COMPOSER_BUCKET_RANDOM "$SNAPSHOT_BUCKET/logs-$DATE"; then
+        echo "DAGs copied successfully."
+    else
+        echo "Failed to copy DAGs. Exiting."
+        exit 1
+    fi
+    # Ensure the environment is ready for operations
+    if ! check_env_status; then
+        exit 1
+    fi
+
+    echo "Saving a snapshot before environment destruction..."
+    # Initiate snapshot save operation and capture the operation ID
+    OPERATION_ID=$(gcloud beta composer environments snapshots save $ENV_NAME \
+        --project=$PROJECT_ID \
+        --location=$REGION \
+        --snapshot-location=$SNAPSHOT_LOCATION \
+        --async \
+        --snapshot-name=backup \
+        --format="value(name)")
+
+    # Ensure the environment is ready for operations
+    if ! check_env_status; then
+        exit 1
+    fi
+    # Remove the random bucket
+    gsutil -m rm -r $COMPOSER_BUCKET_RANDOM
+    
+    # Ensure the environment is ready for operations
+    if ! check_env_status; then
+        exit 1
+    fi
+    echo "Deleting the Google Cloud Composer environment..."
+    # Delete the environment
+    if gcloud composer environments delete $ENV_NAME \
+        --project=$PROJECT_ID \
+        --location $REGION \
+        --quiet; then
+        echo "Environment deleted successfully."
+    else
+        echo "Failed to delete environment. Please check the GCP console for more details."
+        exit 1
+    fi
+
+    echo "All steps completed successfully."
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: create-composer-environment
+spec:
+  schedule: "0 5 * * *"  # Runs daily at 08:00 AM UTC
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: micro-services-sa
+          containers:
+          - name: create-composer
+            image: google/cloud-sdk:slim
+            imagePullPolicy: IfNotPresent
+            command: ["/bin/bash"]
+            args: ["/scripts/create-script.sh"]
+            volumeMounts:
+            - name: script-volume
+              mountPath: /scripts
+          volumes:
+          - name: script-volume
+            configMap:
+              name: composer-management-scripts
+              defaultMode: 0744
+          restartPolicy: OnFailure
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: destroy-composer-environment
+spec:
+  schedule: "0 18 * * *"  # Runs daily at 7:00 PM UTC
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: micro-services-sa
+          containers:
+          - name: destroy-composer
+            image: google/cloud-sdk:slim
+            imagePullPolicy: IfNotPresent
+            command: ["/bin/bash"]
+            args: ["/scripts/destroy-script.sh"]
+            volumeMounts:
+            - name: script-volume
+              mountPath: /scripts
+          volumes:
+          - name: script-volume
+            configMap:
+              name: composer-management-scripts
+              defaultMode: 0744
+          restartPolicy: OnFailure

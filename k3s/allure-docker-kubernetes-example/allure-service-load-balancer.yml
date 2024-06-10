@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: allure-service-load-balancer
+  namespace: allure-docker-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: allure-api
+      port: 6060
+      targetPort: 5050
+    - name: allure-ui
+      port: 7070
+      targetPort: 5252
+  selector:
+    type: app

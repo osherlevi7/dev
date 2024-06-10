@@ -6,6 +6,12 @@ additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
   - "--log.level=DEBUG"
 
+
+  # - "--certificatesresolvers.myresolver.acme.storage=/acme.json"
+  # - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+  # - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+
+
 deployment:
   enabled: true
   replicas: 3
@@ -52,6 +58,6 @@ service:
   annotations: {}
   labels: {}
   spec:
-    loadBalancerIP: 192.168.0.224 # this should be an IP in the MetalLB range
+    loadBalancerIP: 192.168.0.253 # this should be an IP in the MetalLB range
   loadBalancerSourceRanges: []
   externalIPs: []

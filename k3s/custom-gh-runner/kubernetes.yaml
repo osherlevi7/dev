@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: github-runner
+  labels:
+    app: github-runner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: github-runner
+  template:
+    metadata:
+      labels:
+        app: github-runner
+    spec:
+      hostNetwork: true
+      imagePullSecrets:
+      - name: ecr-creds
+      containers:
+      - name: github-runner
+        imagePullPolicy: Always  #use local kind image
+        image: <artifactory>/gh-runner-k8s:latest
+        env:
+        - name: GITHUB_PERSONAL_TOKEN 
+          valueFrom:
+            secretKeyRef:
+              name: github-secret
+              key: GITHUB_PERSONAL_TOKEN
+        - name: DOCKER_HOST
+          value: tcp://dind-service:2375
+        volumeMounts:
+        - name: data
+          mountPath: /work/
+        resources:
+          limits:
+            cpu: 4
+            memory: 2Gi
+          requests:
+            cpu: 500m
+            memory: 1024Mi
+      - name: dind 
+        image: docker:24.0.6-dind
+        env:
+        - name: DOCKER_TLS_CERTDIR
+          value: ""
+        resources: 
+            requests: 
+                cpu: 20m 
+                memory: 512Mi 
+        securityContext: 
+            privileged: true 
+        volumeMounts: 
+          - name: docker-graph-storage 
+            mountPath: /var/lib/docker 
+          - name: data
+            mountPath: /work/
+        resources:
+          limits:
+            cpu: 2
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+      volumes:
+      - name: docker-graph-storage 
+        emptyDir: {}
+      - name: data
+        emptyDir: {}
+
+      
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: dind-service
+spec:
+  selector:
+    app: github-runner  # Must match the label of your Deployment
+  ports:
+    - protocol: TCP
+      port: 2375
+      targetPort: 2375

@@ -26,10 +26,10 @@ kubectl create ns monitoring
 3. Create the prometheus dashboard user and password secret:
 
 ```shell
-echo 'useradmin' > admin-user
-echo 'passw0rd' > admin-pass
-kubectl create secret generic grafana-admin-credentials --from-file=./admin-user --from-file=admin-pass -n monitoring
-rm admin-user && rm admin-pass
+echo -n 'adminuser' > ./admin-user 
+echo -n 'p@ssword!' > ./admin-password
+kubectl create secret generic grafana-admin-credentials --from-file=./admin-user --from-file=admin-password -n monitoring
+rm admin-user && rm admin-password
 ```
 
 4. Install the monitoring-stack:
@@ -43,3 +43,12 @@ helm install -n monitoring prometheus prometheus-community/kube-prometheus-stack
 kubectl --namespace monitoring get pods -l "release=prometheus"
 ```
 
+
+# Expose the Grafana to the world 
+
+```sh
+aws iam create-role --role-name CertManagerRoute53Role --assume-role-policy-document file://trust-policy.json
+```
+```sh
+aws iam put-role-policy --role-name CertManagerRoute53Role --policy-name CertManagerRoute53Policy --policy-document file://route53-policy.json
+```

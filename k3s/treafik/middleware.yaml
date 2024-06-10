@@ -1,0 +1,121 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-dashboard-basicauth
+  namespace: traefik
+spec:
+  basicAuth:
+    secret: traefik-dashboard-auth
+
+# AddPrefix example
+# spec:
+#   addPrefix:
+#     prefix: "/prefix"
+
+# Buffering example
+# spec:
+#   buffering:
+#     maxRequestBodyBytes: 10000
+#     maxResponseBodyBytes: 10000
+#     memRequestBodyBytes: 1000
+#     memResponseBodyBytes: 1000
+
+# Chain example
+# spec:
+#   chain:
+#     middlewares:
+#     - name: middleware1
+#     - name: middleware2
+
+# CircuitBreaker example
+# spec:
+#   circuitBreaker:
+#     expression: "NetworkErrorRatio() > 0.5"
+
+# Compress example
+# spec:
+#   compress: {}
+
+# DigestAuth example
+# spec:
+#   digestAuth:
+#     users:
+#     - "user:realm:hash"
+#     removeHeader: true
+
+# Errors example
+# spec:
+#   errors:
+#     status:
+#     - "500-599"
+#     service: "error"
+#     query: "/{status}.html"
+
+# ForwardAuth example
+# spec:
+#   forwardAuth:
+#     address: "http://authserver.com/auth"
+#     trustForwardHeader: true
+
+# Headers example
+# spec:
+#   headers:
+#     customRequestHeaders:
+#       X-Script-Name: "/mypath"
+
+# IPWhiteList example
+# spec:
+#   ipWhiteList:
+#     sourceRange:
+#     - "192.168.1.7"
+#     - "192.168.1.8"
+
+# PassTLSClientCert example
+# spec:
+#   passTLSClientCert:
+#     pem: true
+
+# RateLimit example
+# spec:
+#   rateLimit:
+#     average: 100
+#     burst: 50
+
+# RedirectRegex example
+# spec:
+#   redirectRegex:
+#     regex: "^http://localhost/(.*)"
+#     replacement: "http://mydomain/$1"
+
+# RedirectScheme example
+# spec:
+#   redirectScheme:
+#     scheme: "https"
+
+# ReplacePath example
+# spec:
+#   replacePath:
+#     path: "/newpath"
+
+# ReplacePathRegex example
+# spec:
+#   replacePathRegex:
+#     regex: "^/oldpath/(.*)"
+#     replacement: "/newpath/$1"
+
+# Retry example
+# spec:
+#   retry:
+#     attempts: 3
+
+# StripPrefix example
+# spec:
+#   stripPrefix:
+#     prefixes:
+#     - "/oldpath"
+
+# StripPrefixRegex example
+# spec:
+#   stripPrefixRegex:
+#     regex:
+#     - "/oldpath(.*)"

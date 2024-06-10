@@ -31,7 +31,7 @@ The middleware is named "default-headers" and is specified to be used in the "de
 #### Apply secret - The secret made for being use for the auth Middleware  
 ```sh
     vim traefik/dashboard/secret-dashboard.yaml
-    kubectl apply -f secret-dashboard.yaml
+    kubectl apply -f dashboard/secret-dashboard.yaml
     kubectl get secrets --namespace traefik
 ```
 #### Middleware - The authentication to your TRAEFIK dashboard. 
