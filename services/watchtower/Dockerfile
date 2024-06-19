@@ -2,7 +2,7 @@ FROM containrrr/watchtower:latest as parent
 
 FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine as google
 
-FROM python:3-alpine as served
+FROM python:3.13.0a4-alpine as served
 
 LABEL "com.centurylinklabs.watchtower"="true"
 
