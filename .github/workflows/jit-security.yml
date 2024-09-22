@@ -42,6 +42,17 @@ jobs:
       with:
         security_control: registry.jit.io/control-gitleaks-alpine:latest
         
+  software-bill-of-materials:
+    if: fromJSON(github.event.inputs.client_payload).payload.workflow_job_name == 'software-bill-of-materials' && fromJSON(github.event.inputs.client_payload).payload.workflow_slug == 'workflow-sbom'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+    - name: syft
+      uses: jitsecurity-controls/jit-github-action@v4.2.2
+      with:
+        security_control: registry.jit.io/control-syft-alpine:latest
+        fail_if_cannot_checkout: false
+        
   software-component-analysis-elixir:
     if: fromJSON(github.event.inputs.client_payload).payload.workflow_job_name == 'software-component-analysis-elixir' && fromJSON(github.event.inputs.client_payload).payload.workflow_slug == 'workflow-sca'
     runs-on: ubuntu-22.04
