@@ -1,5 +1,6 @@
 name: My plan
 level: beginner
+update_id: 2c01e303-0022-438f-8fa7-06ef7ae3aa6b
 author: Jit
 version: 0.1
 owners:
@@ -8,20 +9,15 @@ references:
   - https://www.jit.io
 tags: []
 items:
+  - name: Verify that Github Branch Protection is properly configured
+    uses: jitsecurity-controls/jit-plans/items/third_party_app/item-branch-protection-scm.yml@latest
   - name: Scan your code for vulnerabilities (SAST)
-    uses: >-
-      jitsecurity-controls/jit-plans/items/code/item-code-vulnerability.yml@latest
-  - name: Scan code for hard-coded secrets
-    uses: jitsecurity-controls/jit-plans/items/code/item-secret-detection.yml@latest
+    uses: jitsecurity-controls/jit-plans/items/code/item-code-vulnerability.yml@latest
   - name: Scan your code dependencies for vulnerabilities (SCA)
     uses: jitsecurity-controls/jit-plans/items/code/item-dependency-check.yml@latest
-  - name: Generate a Software Bill of Materials (SBOM)
-    uses: >-
-      jitsecurity-controls/jit-plans/items/code/item-software-bill-of-materials.yml@latest
   - name: Verify that MFA for your GitHub organization is enabled
-    uses: >-
-      jitsecurity-controls/jit-plans/items/third_party_app/item-mfa-scm.yml@latest
-  - name: Verify that Github Branch Protection is properly configured
-    uses: >-
-      jitsecurity-controls/jit-plans/items/third_party_app/item-branch-protection-scm.yml@latest
-
+    uses: jitsecurity-controls/jit-plans/items/third_party_app/item-mfa-scm.yml@latest
+  - name: Scan code for hard-coded secrets
+    uses: jitsecurity-controls/jit-plans/items/code/item-secret-detection.yml@latest
+  - name: Generate a Software Bill of Materials (SBOM)
+    uses: jitsecurity-controls/jit-plans/items/code/item-software-bill-of-materials.yml@latest
