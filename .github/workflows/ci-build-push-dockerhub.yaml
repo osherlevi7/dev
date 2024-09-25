@@ -34,8 +34,10 @@ jobs:
           fetch-depth: 0
           
       - name: INFO | Debugging info
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          echo '${{ github.event.head_commit.message }}'
+          echo "$COMMIT_MESSAGE"
           echo '${{ github.base_ref }}'
           echo '${{ github.ref }}'
       
