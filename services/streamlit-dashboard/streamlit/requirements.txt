@@ -32,7 +32,7 @@ pandas==1.5.2
 Pillow==10.2.0
 plotly==5.11.0
 proto-plus==1.22.1
-protobuf==3.20.3
+protobuf==4.25.8
 pyarrow==14.0.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
@@ -58,7 +58,7 @@ tornado==6.3.3
 typing-extensions==4.4.0
 tzdata==2022.7
 tzlocal==4.2
-urllib3==1.26.19
+urllib3==2.5.0
 validators==0.21.0
 watchdog==2.2.0
 zipp==3.11.0
